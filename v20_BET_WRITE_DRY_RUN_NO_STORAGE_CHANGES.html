@@ -1,0 +1,32 @@
+<!doctype html><html lang="el"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>v20 - Δοκιμή στοιχήματος στη μνήμη</title><style>body{font:17px system-ui;background:#0c1730;color:#e8f5ff;margin:0;padding:22px;line-height:1.5}main{max-width:700px;margin:auto}h1{font-size:25px}button{font:inherit;background:#35dfce;color:#08202b;border:0;border-radius:12px;padding:15px;margin:12px 0;font-weight:bold}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#192c50;border-radius:12px;padding:18px}strong{color:#6df0d2}.warn{color:#ffd28b}</style></head><body><main><h1>v20 — Δοκιμή προσθήκης / αλλαγής / διαγραφής στοιχήματος</h1><p>🔒 <strong>ΜΟΝΟ ΣΤΗ ΜΝΗΜΗ.</strong> Διαβάζει την υπάρχουσα λίστα, δημιουργεί δοκιμαστικό στοίχημα στη RAM, το αλλάζει και το αφαιρεί. <b>Δεν καλεί setItem, removeItem ή clear.</b> Δεν αποθηκεύει τίποτα, ούτε δημιουργεί δεύτερο αντίγραφο στο Safari.</p><button id="run">Εκτέλεση δοκιμής</button><pre id="out">Αναμονή δοκιμής.</pre><p class="warn">Δεν είναι η τελική v20. Μην αντικαταστήσεις την κανονική εφαρμογή.</p></main><script>
+'use strict';
+const KEY='ba_dual_bets_prop_v1';
+const out=document.getElementById('out');
+function check(v,msg){if(!v)throw new Error(msg)}
+document.getElementById('run').addEventListener('click',()=>{
+ try{
+  const original=window.localStorage.getItem(KEY);
+  check(original!==null,'Δεν βρέθηκε η λίστα v19. Άνοιξε το εργαλείο στον ίδιο ιστότοπο από το Safari του iPhone.');
+  const bets=JSON.parse(original);
+  check(Array.isArray(bets),'Η λίστα δεν είναι array');
+  const ids=new Set(bets.map(x=>String(x.id)));
+  check(ids.size===bets.length,'Υπάρχουν διπλά IDs στο αρχικό αρχείο');
+  const count=bets.length;
+  const clone=JSON.parse(JSON.stringify(bets));
+  const id='V20_RAM_TEST_'+Date.now();
+  const trial={id,date:'2026-10-14',league:'V20 RAM TEST',odds:2,units:10,edge:5,edgeProp:5,live:false,result:'pending',schemaVersion:4};
+  check(!ids.has(id),'ID collision');
+  clone.push(trial);
+  check(clone.length===count+1 && clone.at(-1).id===id,'Αποτυχία προσθήκης');
+  clone[clone.length-1].result='win';
+  check(clone.at(-1).result==='win','Αποτυχία αλλαγής');
+  const encoded=JSON.stringify(clone);
+  const decoded=JSON.parse(encoded);
+  check(decoded.length===count+1 && decoded.at(-1).result==='win','Αποτυχία JSON round-trip');
+  clone.pop();
+  check(clone.length===count,'Αποτυχία διαγραφής');
+  check(window.localStorage.getItem(KEY)===original,'Τα αρχικά δεδομένα άλλαξαν κατά τη δοκιμή');
+  out.textContent='✅ Αρχικά στοιχήματα: '+count+'\n✅ Προσθήκη στη μνήμη: OK\n✅ Αλλαγή αποτελέσματος: OK\n✅ Μετατροπή σε JSON και ανάγνωση: OK\n✅ Διαγραφή δοκιμαστικού: OK\n✅ Πραγματική λίστα στο Safari: ΑΜΕΤΑΒΛΗΤΗ\n\nΔεν πραγματοποιήθηκε καμία αποθήκευση.';
+ }catch(e){out.textContent='❌ Η δοκιμή δεν ολοκληρώθηκε: '+e.message+'\nΔεν έγινε καμία εγγραφή.';}
+});
+</script></body></html>
