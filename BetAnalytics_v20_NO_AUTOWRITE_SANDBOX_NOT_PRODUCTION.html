@@ -1,0 +1,3272 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BetAnalytics Pro – Multi-DeVig Tracking (v19 Focused)</title>
+<style>
+* { margin: 0px; padding: 0px; box-sizing: border-box; }
+
+html, body { width: 100%; height: 100%; }
+
+body { font-family: "Segoe UI", Roboto, "Helvetica Neue", sans-serif; background: linear-gradient(135deg, rgb(15, 20, 25) 0%, rgb(26, 31, 58) 100%); padding: 15px 10px; color: rgb(224, 224, 224); overflow-x: hidden; min-height: 100vh; }
+
+.container { max-width: 1200px; width: 100%; margin: 0px auto; background: rgba(26, 31, 58, 0.95); border-radius: 16px; padding: 28px 20px; box-shadow: rgba(0, 0, 0, 0.5) 0px 20px 60px; border: 1px solid rgba(0, 212, 255, 0.1); }
+
+h1 { text-align: center; margin-bottom: 10px; font-size: 28px; color: rgb(0, 212, 255); font-weight: 300; letter-spacing: 2px; }
+
+.subtitle { text-align: center; color: rgb(122, 143, 166); font-size: 11px; margin-bottom: 28px; text-transform: uppercase; letter-spacing: 1px; }
+
+.tab-nav { display: flex; gap: 10px; margin-bottom: 28px; border-bottom: 2px solid rgba(0, 212, 255, 0.2); padding-bottom: 12px; flex-wrap: wrap; }
+
+.tab-btn { padding: 12px 20px; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px 8px 0px 0px; color: rgb(122, 143, 166); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; flex: 1 1 0%; min-width: 150px; text-align: center; }
+
+.tab-btn.active { background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1)); border-color: rgb(0, 212, 255); color: rgb(0, 212, 255); }
+
+.tab-btn.proportional-tab.active { background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1)); border-color: rgb(0, 255, 136); color: rgb(0, 255, 136); }
+
+.tab-btn.power-tab.active { background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.1)); border-color: rgb(255, 193, 7); color: rgb(255, 193, 7); }
+
+.tab-btn:hover { background: rgba(0, 212, 255, 0.15); }
+
+.tab-content { display: none; }
+
+.tab-content.active { display: block; }
+
+.method-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: 700; margin-left: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.method-badge.proportional { background: rgba(0, 255, 136, 0.2); color: rgb(0, 255, 136); }
+
+.method-badge.power { background: rgba(255, 193, 7, 0.2); color: rgb(255, 193, 7); }
+
+.filter-section, .input-section { background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 212, 255, 0.02)); border: 1px solid rgba(0, 212, 255, 0.15); border-radius: 12px; padding: 22px 20px; margin-bottom: 28px; }
+
+.input-group { display: flex; flex-direction: column; margin-bottom: 16px; }
+
+label { font-size: 10px; font-weight: 600; color: rgb(122, 143, 166); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+input, select { padding: 12px; border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 8px; font-size: 14px; font-family: inherit; background: rgba(255, 255, 255, 0.05); color: rgb(224, 224, 224); width: 100%; }
+
+input:focus, select:focus { outline: none; border-color: rgb(0, 212, 255); background: rgba(0, 212, 255, 0.08); box-shadow: rgba(0, 212, 255, 0.15) 0px 0px 10px; }
+
+button { padding: 13px 24px; background: linear-gradient(135deg, rgb(0, 212, 255), rgb(0, 153, 204)); color: rgb(15, 20, 25); border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 12px; width: 100%; transition: 0.2s; }
+
+button:hover { transform: translateY(-2px); box-shadow: rgba(0, 212, 255, 0.3) 0px 8px 20px; }
+
+button:active { transform: scale(0.98); }
+
+.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+@media (min-width: 600px) {
+  .stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .stat-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+.stat-box { background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 212, 255, 0.03)); border: 1px solid rgba(0, 212, 255, 0.15); border-radius: 12px; padding: 18px 16px; text-align: center; transition: 0.3s; }
+
+.stat-box:hover { transform: translateY(-3px); border-color: rgb(0, 212, 255); box-shadow: rgba(0, 212, 255, 0.2) 0px 8px 20px; }
+
+.stat-label { font-size: 10px; color: rgb(122, 143, 166); text-transform: uppercase; font-weight: 600; margin-bottom: 9px; letter-spacing: 1px; }
+
+.stat-value { font-size: 22px; font-weight: 600; color: rgb(0, 212, 255); font-family: "Courier New", monospace; }
+
+.stat-value.positive { color: rgb(0, 255, 136); }
+
+.stat-value.negative { color: rgb(255, 51, 102); }
+
+.stat-value.neutral { color: rgb(255, 193, 7); }
+
+.league-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 18px; margin-bottom: 16px; }
+
+@media (min-width: 600px) {
+  .league-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.league-item { display: flex; align-items: center; gap: 11px; font-size: 13px; }
+
+.league-item input { width: 22px; height: 22px; accent-color: rgb(0, 212, 255); flex-shrink: 0; cursor: pointer; }
+
+.league-item label { margin: 0px; text-transform: uppercase; letter-spacing: 0.3px; font-size: 13px; cursor: pointer; line-height: 1.5; font-weight: 700; color: rgb(255, 255, 255); }
+
+.league-divider { grid-column: 1 / -1; height: 1px; background: rgba(0, 212, 255, 0.2); margin: 8px 0px; }
+
+.table-wrapper { overflow-x: auto; margin: 0px -20px; padding: 0px 20px; }
+
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
+
+th { background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.08)); color: rgb(0, 212, 255); padding: 13px 9px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid rgba(0, 212, 255, 0.2); white-space: nowrap; }
+
+td { padding: 13px 9px; border-bottom: 1px solid rgba(0, 212, 255, 0.1); font-family: "Courier New", monospace; font-size: 11px; }
+
+tr { transition: 0.2s; }
+
+tr:hover { background: rgba(0, 212, 255, 0.05); }
+
+tr.win { background: rgba(0, 255, 136, 0.08); }
+
+tr.loss { background: rgba(255, 51, 102, 0.08); }
+
+tr.push { background: rgba(122, 143, 166, 0.08); }
+
+tr.pending { background: rgba(255, 193, 7, 0.08); }
+
+.sport-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 9px; font-weight: 600; background: rgba(0, 212, 255, 0.2); color: rgb(0, 212, 255); white-space: nowrap; }
+
+.edge-badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: rgba(255, 193, 7, 0.2); color: rgb(255, 193, 7); }
+
+.button-group { display: flex; gap: 12px; margin-top: 12px; justify-content: center; flex-wrap: wrap; }
+
+.button-group button { flex: 1 1 0%; min-width: 140px; }
+
+.button-danger { background: linear-gradient(135deg, rgb(255, 51, 102), rgb(204, 0, 51)); color: rgb(255, 255, 255); }
+
+.small-label { font-size: 11px; color: rgb(122, 143, 166); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.inline-range { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.inline-range .input-group { flex: 1 1 0%; min-width: 140px; }
+
+.action-buttons { display: flex; gap: 6px; align-items: center; }
+
+.btn-edit { padding: 6px 10px; font-size: 11px; background: linear-gradient(135deg, rgb(0, 212, 255), rgb(0, 153, 204)); border-radius: 6px; color: rgb(15, 20, 25); border: none; cursor: pointer; font-weight: 600; margin: 0px; }
+
+.btn-delete { padding: 6px 10px; font-size: 11px; background: rgb(255, 51, 102); border-radius: 6px; color: rgb(255, 255, 255); border: none; cursor: pointer; font-weight: 600; margin: 0px; }
+
+.modal-overlay { display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9998; backdrop-filter: blur(8px); animation: 0.2s ease 0s 1 normal none running fadeIn; }
+
+@keyframes fadeIn { 
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(26, 31, 58, 0.98), rgba(15, 20, 25, 0.98)); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 16px; padding: 35px 30px; z-index: 9999; max-width: 90%; width: 450px; box-shadow: rgba(0, 212, 255, 0.4) 0px 30px 90px; max-height: 90vh; overflow-y: auto; animation: 0.3s ease 0s 1 normal none running slideIn; }
+
+@keyframes slideIn { 
+  0% { transform: translate(-50%, -60%); opacity: 0; }
+  100% { transform: translate(-50%, -50%); opacity: 1; }
+}
+
+.modal h3 { color: rgb(0, 212, 255); font-size: 20px; margin-bottom: 10px; text-align: center; font-weight: 600; letter-spacing: 0.5px; }
+
+.modal .user-name { color: rgb(0, 255, 136); font-weight: 700; font-size: 22px; }
+
+.modal p { color: rgb(224, 224, 224); font-size: 15px; line-height: 1.7; margin-bottom: 28px; text-align: center; }
+
+.modal-icon { text-align: center; font-size: 48px; margin-bottom: 20px; animation: 2s ease-in-out 0s infinite normal none running pulse; }
+
+@keyframes pulse { 
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.modal-buttons { display: flex; gap: 12px; }
+
+.modal-buttons button { flex: 1 1 0%; margin: 0px; padding: 14px; font-size: 13px; transition: 0.2s; }
+
+.modal-buttons button:hover { transform: translateY(-2px); box-shadow: rgba(0, 212, 255, 0.3) 0px 8px 20px; }
+
+.btn-cancel { background: rgba(122, 143, 166, 0.3); color: rgb(224, 224, 224); }
+
+.btn-cancel:hover { background: rgba(122, 143, 166, 0.5); }
+
+.btn-confirm { background: linear-gradient(135deg, rgb(255, 51, 102), rgb(204, 0, 51)); color: rgb(255, 255, 255); }
+
+.btn-confirm:hover { box-shadow: rgba(255, 51, 102, 0.4) 0px 8px 20px; }
+
+.edit-modal { width: 500px; max-width: 95%; }
+
+.edit-modal .inline-range { margin-bottom: 12px; }
+
+.edit-modal .input-group { margin-bottom: 12px; }
+
+.history-card { background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 212, 255, 0.03)); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 14px; transition: 0.3s; position: relative; }
+
+.history-card:hover { background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.08)); border-color: rgb(0, 212, 255); transform: translateY(-2px); box-shadow: rgba(0, 212, 255, 0.2) 0px 8px 20px; }
+
+.history-card.suggested { border: 2px solid rgba(0, 255, 136, 0.4); background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.03)); }
+
+.history-card.suggested:hover { background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.08)); border-color: rgb(0, 255, 136); box-shadow: rgba(0, 255, 136, 0.3) 0px 8px 20px; }
+
+.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
+.history-market-type { font-size: 11px; font-weight: 700; color: rgb(0, 212, 255); text-transform: uppercase; letter-spacing: 1px; }
+
+.history-timestamp { font-size: 10px; color: rgb(122, 143, 166); }
+
+.suggested-badge { position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 12px; font-size: 9px; font-weight: 700; background: linear-gradient(135deg, rgb(0, 255, 136), rgb(0, 204, 102)); color: rgb(15, 20, 25); text-transform: uppercase; letter-spacing: 0.5px; animation: 2s ease-in-out 0s infinite normal none running glow; }
+
+@keyframes glow { 
+  0%, 100% { box-shadow: rgba(0, 255, 136, 0.3) 0px 0px 5px; }
+  50% { box-shadow: rgba(0, 255, 136, 0.6) 0px 0px 20px; }
+}
+
+.history-outcomes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px; }
+
+.history-outcome { background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 12px; border: 1px solid rgba(0, 212, 255, 0.1); transition: 0.2s; }
+
+.history-outcome:hover { border-color: rgba(0, 212, 255, 0.3); background: rgba(0, 0, 0, 0.3); }
+
+.history-outcome-name { font-size: 12px; color: rgb(0, 212, 255); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.history-outcome-details { font-size: 11px; line-height: 1.8; color: rgb(224, 224, 224); font-family: "Courier New", monospace; }
+
+.history-outcome-details span { display: block; }
+
+.edge-value { font-weight: 700; font-size: 13px; }
+
+.edge-value.positive { color: rgb(0, 255, 136); }
+
+.edge-value.negative { color: rgb(255, 51, 102); }
+
+.devig-comparison { background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 10px; margin-top: 8px; border: 1px solid rgba(0, 212, 255, 0.15); }
+
+.devig-method { margin-bottom: 6px; }
+
+.devig-method:last-child { margin-bottom: 0px; }
+
+.devig-method-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+.devig-method-title.proportional { color: rgb(0, 255, 136); }
+
+.devig-method-title.power { color: rgb(255, 193, 7); }
+.devig-method-title.shin { color: rgb(0, 212, 255); }
+.devig-method-title.ooepc { color: rgb(218, 112, 214); }
+.method-consensus { margin-top: 8px; padding: 7px 9px; border-radius: 7px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.10); font-size: 10px; font-weight: 700; color: #cfe4f7; }
+.method-consensus.strong { border-color: rgba(0,255,136,.45); color: rgb(0,255,136); }
+.method-consensus.mixed { border-color: rgba(255,193,7,.45); color: rgb(255,193,7); }
+
+.devig-method-values { font-size: 10px; color: rgb(224, 224, 224); font-family: "Courier New", monospace; }
+
+.empty-state { text-align: center; padding: 40px 20px; color: rgb(122, 143, 166); font-size: 14px; }
+
+.history-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0, 212, 255, 0.1); }
+
+.history-actions button { flex: 1 1 0%; margin: 0px; padding: 8px; font-size: 11px; }
+
+.btn-load { background: linear-gradient(135deg, rgb(0, 212, 255), rgb(0, 153, 204)); }
+
+.btn-add-proportional { background: linear-gradient(135deg, rgb(0, 255, 136), rgb(0, 204, 102)); color: rgb(15, 20, 25); }
+
+.btn-add-power { background: linear-gradient(135deg, rgb(255, 193, 7), rgb(255, 152, 0)); color: rgb(15, 20, 25); }
+
+.btn-add-both { background: linear-gradient(135deg, rgb(156, 39, 176), rgb(123, 31, 162)); color: rgb(255, 255, 255); }
+
+.btn-remove-history { background: rgba(255, 51, 102, 0.3); color: rgb(255, 51, 102); }
+
+.alert { position: fixed; top: 20px; right: 20px; padding: 16px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; z-index: 10000; animation: 0.3s ease 0s 1 normal none running slideInRight; box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 20px; max-width: 300px; }
+
+@keyframes slideInRight { 
+  0% { transform: translateX(400px); opacity: 0; }
+  100% { transform: translateX(0px); opacity: 1; }
+}
+
+.alert.success { background: linear-gradient(135deg, rgb(0, 255, 136), rgb(0, 204, 102)); color: rgb(15, 20, 25); }
+
+.alert.error { background: linear-gradient(135deg, rgb(255, 51, 102), rgb(204, 0, 51)); color: rgb(255, 255, 255); }
+
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; animation: 3s ease-in-out 0s infinite normal none running float; }
+
+@keyframes float { 
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@media (max-width: 600px) {
+  body { padding: 10px 6px; }
+  .container { padding: 22px 16px; border-radius: 12px; }
+  h1 { font-size: 24px; }
+  .subtitle { font-size: 10px; margin-bottom: 22px; }
+  .tab-nav { gap: 8px; }
+  .tab-btn { padding: 10px 14px; font-size: 11px; min-width: 120px; }
+  .filter-section, .input-section { padding: 18px 14px; }
+  .stat-grid { gap: 10px; }
+  .stat-box { padding: 14px 12px; }
+  .stat-value { font-size: 20px; }
+  table { font-size: 10px; }
+  th, td { padding: 11px 7px; }
+  .league-item input { width: 21px; height: 21px; }
+  .league-item { font-size: 12px; }
+  .league-item label { font-size: 12px; }
+  .league-grid { gap: 13px 16px; }
+  .action-buttons { flex-direction: column; gap: 4px; }
+  .btn-edit, .btn-delete { width: 100%; padding: 5px 8px; }
+  .modal { width: 95%; padding: 25px 20px; }
+  .history-outcomes { grid-template-columns: 1fr; }
+  .alert { right: 10px; left: 10px; max-width: calc(100% - 20px); }
+  .history-actions { flex-wrap: wrap; }
+  .history-actions button { min-width: calc(50% - 4px); }
+}
+
+/* PATCH: prevent invisible overlay blocking clicks */
+.modal-overlay{pointer-events:none;}
+.modal-overlay.show{pointer-events:auto;}
+</style>
+</head>
+<body><div style="position:sticky;top:0;z-index:99999;padding:13px;background:#fff2bf;color:#452800;font:bold 15px Arial;text-align:center">🧪 v20 NO-AUTO-WRITE SANDBOX — μόνο δοκιμαστικά. Έλεγχος εγγραφής/ανάγνωσης, εμφανές σφάλμα, χωρίς σιωπηρή παράβλεψη σε στοιχήματα. ΟΧΙ για παραγωγή.</div>
+<div class="container">
+<h1>⚡ BetAnalytics Pro</h1>
+<div class="subtitle">Advanced Multi-Method Pinnacle Edge Tracking System · v19 Focused</div>
+<!-- Tab Navigation -->
+<div class="tab-nav">
+<button class="tab-btn proportional-tab active" type="button">📊 Proportional Bets</button>
+<button class="tab-btn" type="button">💡 Calculator</button>
+</div>
+<!-- PROPORTIONAL BETS TAB -->
+<div class="tab-content active" id="proportionalTab">
+<div style="text-align:center;margin-bottom:20px;">
+<span class="method-badge proportional">📊 PROPORTIONAL DE-VIG METHOD</span>
+</div>
+<!-- Filters Proportional -->
+<div class="filter-section">
+<div class="input-group" style="margin-bottom:20px;">
+<div class="small-label">ΔΙΟΡΓΑΝΩΣΕΙΣ (Leagues)</div>
+<div class="league-item" style="margin-bottom:14px;">
+<input checked="" id="allLeaguesProp" type="checkbox"/>
+<label for="allLeaguesProp">All Leagues</label>
+</div>
+<div class="league-grid" id="leagueGridProp"><div class="league-item"><input id="lg_Prop_0" type="checkbox"/><label for="lg_Prop_0">Premier League</label></div><div class="league-item"><input id="lg_Prop_1" type="checkbox"/><label for="lg_Prop_1">La Liga</label></div><div class="league-item"><input id="lg_Prop_2" type="checkbox"/><label for="lg_Prop_2">Serie A</label></div><div class="league-item"><input id="lg_Prop_3" type="checkbox"/><label for="lg_Prop_3">Bundesliga</label></div><div class="league-item"><input id="lg_Prop_4" type="checkbox"/><label for="lg_Prop_4">Ligue 1</label></div><div class="league-item"><input id="lg_Prop_5" type="checkbox"/><label for="lg_Prop_5">UCL</label></div><div class="league-item"><input id="lg_Prop_6" type="checkbox"/><label for="lg_Prop_6">Europa League</label></div><div class="league-item"><input id="lg_Prop_7" type="checkbox"/><label for="lg_Prop_7">NBA</label></div><div class="league-item"><input id="lg_Prop_8" type="checkbox"/><label for="lg_Prop_8">NFL</label></div><div class="league-item"><input id="lg_Prop_9" type="checkbox"/><label for="lg_Prop_9">Tennis ATP</label></div><div class="league-item"><input id="lg_Prop_10" type="checkbox"/><label for="lg_Prop_10">Tennis WTA</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_11" type="checkbox"/><label for="lg_Prop_11">Eredivisie</label></div><div class="league-item"><input id="lg_Prop_12" type="checkbox"/><label for="lg_Prop_12">Primeira Liga</label></div><div class="league-item"><input id="lg_Prop_13" type="checkbox"/><label for="lg_Prop_13">Super League 1</label></div><div class="league-item"><input id="lg_Prop_14" type="checkbox"/><label for="lg_Prop_14">Scottish Premiership</label></div><div class="league-item"><input id="lg_Prop_15" type="checkbox"/><label for="lg_Prop_15">Belgian Pro League</label></div><div class="league-item"><input id="lg_Prop_16" type="checkbox"/><label for="lg_Prop_16">Super Lig</label></div><div class="league-item"><input id="lg_Prop_17" type="checkbox"/><label for="lg_Prop_17">Austrian Bundesliga</label></div><div class="league-item"><input id="lg_Prop_18" type="checkbox"/><label for="lg_Prop_18">Swiss Super League</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_19" type="checkbox"/><label for="lg_Prop_19">EFL Cup</label></div><div class="league-item"><input id="lg_Prop_20" type="checkbox"/><label for="lg_Prop_20">FA Cup</label></div><div class="league-item"><input id="lg_Prop_21" type="checkbox"/><label for="lg_Prop_21">Copa del Rey</label></div><div class="league-item"><input id="lg_Prop_22" type="checkbox"/><label for="lg_Prop_22">Coppa Italia</label></div><div class="league-item"><input id="lg_Prop_23" type="checkbox"/><label for="lg_Prop_23">DFB Pokal</label></div><div class="league-item"><input id="lg_Prop_24" type="checkbox"/><label for="lg_Prop_24">Coupe de France</label></div><div class="league-item"><input id="lg_Prop_25" type="checkbox"/><label for="lg_Prop_25">Greek Cup</label></div><div class="league-item"><input id="lg_Prop_26" type="checkbox"/><label for="lg_Prop_26">Taça de Portugal</label></div><div class="league-item"><input id="lg_Prop_27" type="checkbox"/><label for="lg_Prop_27">KNVB Beker</label></div><div class="league-item"><input id="lg_Prop_28" type="checkbox"/><label for="lg_Prop_28">Turkish Cup</label></div><div class="league-item"><input id="lg_Prop_29" type="checkbox"/><label for="lg_Prop_29">Conference League</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_30" type="checkbox"/><label for="lg_Prop_30">World Cup</label></div><div class="league-item"><input id="lg_Prop_31" type="checkbox"/><label for="lg_Prop_31">Euro Championship</label></div><div class="league-item"><input id="lg_Prop_32" type="checkbox"/><label for="lg_Prop_32">Copa America</label></div><div class="league-item"><input id="lg_Prop_33" type="checkbox"/><label for="lg_Prop_33">UEFA Nations League</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_34" type="checkbox"/><label for="lg_Prop_34">Championship</label></div><div class="league-item"><input id="lg_Prop_35" type="checkbox"/><label for="lg_Prop_35">Segunda Division</label></div><div class="league-item"><input id="lg_Prop_36" type="checkbox"/><label for="lg_Prop_36">Serie B</label></div><div class="league-item"><input id="lg_Prop_37" type="checkbox"/><label for="lg_Prop_37">2. Bundesliga</label></div><div class="league-item"><input id="lg_Prop_38" type="checkbox"/><label for="lg_Prop_38">Ligue 2</label></div><div class="league-item"><input id="lg_Prop_39" type="checkbox"/><label for="lg_Prop_39">Super League 2</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_40" type="checkbox"/><label for="lg_Prop_40">MLS</label></div><div class="league-item"><input id="lg_Prop_41" type="checkbox"/><label for="lg_Prop_41">Liga MX</label></div><div class="league-item"><input id="lg_Prop_42" type="checkbox"/><label for="lg_Prop_42">Campeonato Brasileiro</label></div><div class="league-item"><input id="lg_Prop_43" type="checkbox"/><label for="lg_Prop_43">Copa Libertadores</label></div><div class="league-item"><input id="lg_Prop_44" type="checkbox"/><label for="lg_Prop_44">Copa Sudamericana</label></div><div class="league-item"><input id="lg_Prop_45" type="checkbox"/><label for="lg_Prop_45">Copa do Brasil</label></div><div class="league-item"><input id="lg_Prop_46" type="checkbox"/><label for="lg_Prop_46">Copa MX</label></div><div class="league-item"><input id="lg_Prop_47" type="checkbox"/><label for="lg_Prop_47">US Open Cup</label></div><div class="league-item"><input id="lg_Prop_48" type="checkbox"/><label for="lg_Prop_48">Leagues Cup</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_49" type="checkbox"/><label for="lg_Prop_49">Euroleague</label></div><div class="league-item"><input id="lg_Prop_50" type="checkbox"/><label for="lg_Prop_50">Eurocup</label></div><div class="league-item"><input id="lg_Prop_51" type="checkbox"/><label for="lg_Prop_51">Greek Basket League</label></div><div class="league-item"><input id="lg_Prop_52" type="checkbox"/><label for="lg_Prop_52">Spain ACB</label></div><div class="league-item"><input id="lg_Prop_53" type="checkbox"/><label for="lg_Prop_53">Italy Lega A</label></div><div class="league-item"><input id="lg_Prop_54" type="checkbox"/><label for="lg_Prop_54">Germany BBL</label></div><div class="league-item"><input id="lg_Prop_55" type="checkbox"/><label for="lg_Prop_55">France LNB</label></div><div class="league-item"><input id="lg_Prop_56" type="checkbox"/><label for="lg_Prop_56">FIBA World Cup</label></div><div class="league-item"><input id="lg_Prop_57" type="checkbox"/><label for="lg_Prop_57">EuroBasket</label></div><div class="league-item"><input id="lg_Prop_58" type="checkbox"/><label for="lg_Prop_58">NBA Playoffs</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_59" type="checkbox"/><label for="lg_Prop_59">NCAA Football</label></div><div class="league-item"><input id="lg_Prop_60" type="checkbox"/><label for="lg_Prop_60">NFL Playoffs</label></div><div class="league-item"><input id="lg_Prop_61" type="checkbox"/><label for="lg_Prop_61">Super Bowl</label></div><div class="league-item"><input id="lg_Prop_62" type="checkbox"/><label for="lg_Prop_62">MLB</label></div><div class="league-item"><input id="lg_Prop_63" type="checkbox"/><label for="lg_Prop_63">MLB Playoffs</label></div><div class="league-item"><input id="lg_Prop_64" type="checkbox"/><label for="lg_Prop_64">World Series</label></div><div class="league-item"><input id="lg_Prop_65" type="checkbox"/><label for="lg_Prop_65">NHL</label></div><div class="league-item"><input id="lg_Prop_66" type="checkbox"/><label for="lg_Prop_66">NHL Playoffs</label></div><div class="league-item"><input id="lg_Prop_67" type="checkbox"/><label for="lg_Prop_67">Stanley Cup</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_68" type="checkbox"/><label for="lg_Prop_68">Grand Slams</label></div><div class="league-item"><input id="lg_Prop_69" type="checkbox"/><label for="lg_Prop_69">UFC</label></div><div class="league-item"><input id="lg_Prop_70" type="checkbox"/><label for="lg_Prop_70">Boxing</label></div><div class="league-divider"></div><div class="league-item"><input id="lg_Prop_71" type="checkbox"/><label for="lg_Prop_71">Volleyball</label></div><div class="league-item"><input id="lg_Prop_72" type="checkbox"/><label for="lg_Prop_72">Handball</label></div><div class="league-item"><input id="lg_Prop_73" type="checkbox"/><label for="lg_Prop_73">Rugby</label></div><div class="league-item"><input id="lg_Prop_74" type="checkbox"/><label for="lg_Prop_74">Cricket</label></div><div class="league-item"><input id="lg_Prop_75" type="checkbox"/><label for="lg_Prop_75">Other</label></div></div>
+</div>
+<div class="inline-range" style="margin-bottom:20px;">
+<div class="input-group">
+<label for="fromDateProp">Date From</label>
+<input id="fromDateProp" type="date"/>
+</div>
+<div class="input-group">
+<label for="toDateProp">Date To</label>
+<input id="toDateProp" type="date"/>
+</div>
+</div>
+<div class="inline-range" style="margin-bottom:20px;">
+<div class="input-group">
+<label for="oddsFromProp">Odds Min (optional)</label>
+<input id="oddsFromProp" min="1.01" placeholder="1.50" step="0.01" type="number"/>
+</div>
+<div class="input-group">
+<label for="oddsToProp">Odds Max (optional)</label>
+<input id="oddsToProp" min="1.01" placeholder="3.00" step="0.01" type="number"/>
+</div>
+</div>
+<div class="inline-range" style="margin-bottom:20px;">
+<div class="input-group">
+<label for="edgeFromProp">Edge From % (optional)</label>
+<input id="edgeFromProp" placeholder="0" step="0.1" type="number"/>
+</div>
+<div class="input-group">
+<label for="edgeToProp">Edge To % (optional)</label>
+<input id="edgeToProp" placeholder="10" step="0.1" type="number"/>
+</div>
+</div>
+<div class="input-group">
+<label for="betTypeFilterProp">Bet Type</label>
+<select id="betTypeFilterProp">
+<option value="all">All bets</option>
+<option value="live">Other pregame markets only</option>
+<option value="pregame">1X2 pregame only</option>
+</select>
+</div>
+<button id="resetFiltersProp" type="button">Reset Filters</button>
+</div>
+<!-- Stats Proportional -->
+<div class="filter-section" style="margin-top:-12px;">
+<div class="stat-grid">
+<div class="stat-box">
+<div class="stat-label">Total Bets</div>
+<div class="stat-value" id="statTotalBetsProp">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Wins</div>
+<div class="stat-value" id="statWinsProp">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Losses</div>
+<div class="stat-value" id="statLossesProp">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Pending</div>
+<div class="stat-value" id="statPendingProp">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Win %</div>
+<div class="stat-value" id="statWinRateProp">0.0%</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Total Units</div>
+<div class="stat-value positive" id="statTotalUnitsProp">0.00</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Settled Wagered</div>
+<div class="stat-value" id="statTotalWageredProp">0.00</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">ROI %</div>
+<div class="stat-value positive" id="statRoiProp">0.0%</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Open Exposure</div>
+<div class="stat-value neutral" id="statOpenExposureProp">0.00</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Avg Prop Edge %</div>
+<div class="stat-value neutral" id="statAvgEdgeProp">-</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Avg Power Edge %</div>
+<div class="stat-value neutral" id="statAvgEdgePower">-</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Avg Shin(A) Edge %</div>
+<div class="stat-value neutral" id="statAvgEdgeShin">-</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">Avg OO-EPC Edge %</div>
+<div class="stat-value neutral" id="statAvgEdgeOOEPC">-</div>
+</div>
+</div>
+</div>
+<!-- Add Bet Proportional -->
+<div class="input-section">
+<h2 style="font-size:16px; margin-bottom:16px; color:#00ff88;">Add Bet (Proportional primary)</h2>
+<div class="inline-range">
+<div class="input-group">
+<label for="betDateProp">Date</label>
+<input id="betDateProp" type="date"/>
+</div>
+<div class="input-group">
+<label for="betLeagueProp">League</label>
+<select id="betLeagueProp"><option value="Premier League">Premier League</option><option value="La Liga">La Liga</option><option value="Serie A">Serie A</option><option value="Bundesliga">Bundesliga</option><option value="Ligue 1">Ligue 1</option><option value="UCL">UCL</option><option value="Europa League">Europa League</option><option value="NBA">NBA</option><option value="NFL">NFL</option><option value="Tennis ATP">Tennis ATP</option><option value="Tennis WTA">Tennis WTA</option><option value="Eredivisie">Eredivisie</option><option value="Primeira Liga">Primeira Liga</option><option value="Super League 1">Super League 1</option><option value="Scottish Premiership">Scottish Premiership</option><option value="Belgian Pro League">Belgian Pro League</option><option value="Super Lig">Super Lig</option><option value="Austrian Bundesliga">Austrian Bundesliga</option><option value="Swiss Super League">Swiss Super League</option><option value="EFL Cup">EFL Cup</option><option value="FA Cup">FA Cup</option><option value="Copa del Rey">Copa del Rey</option><option value="Coppa Italia">Coppa Italia</option><option value="DFB Pokal">DFB Pokal</option><option value="Coupe de France">Coupe de France</option><option value="Greek Cup">Greek Cup</option><option value="Taça de Portugal">Taça de Portugal</option><option value="KNVB Beker">KNVB Beker</option><option value="Turkish Cup">Turkish Cup</option><option value="Conference League">Conference League</option><option value="World Cup">World Cup</option><option value="Euro Championship">Euro Championship</option><option value="Copa America">Copa America</option><option value="UEFA Nations League">UEFA Nations League</option><option value="Championship">Championship</option><option value="Segunda Division">Segunda Division</option><option value="Serie B">Serie B</option><option value="2. Bundesliga">2. Bundesliga</option><option value="Ligue 2">Ligue 2</option><option value="Super League 2">Super League 2</option><option value="MLS">MLS</option><option value="Liga MX">Liga MX</option><option value="Campeonato Brasileiro">Campeonato Brasileiro</option><option value="Copa Libertadores">Copa Libertadores</option><option value="Copa Sudamericana">Copa Sudamericana</option><option value="Copa do Brasil">Copa do Brasil</option><option value="Copa MX">Copa MX</option><option value="US Open Cup">US Open Cup</option><option value="Leagues Cup">Leagues Cup</option><option value="Euroleague">Euroleague</option><option value="Eurocup">Eurocup</option><option value="Greek Basket League">Greek Basket League</option><option value="Spain ACB">Spain ACB</option><option value="Italy Lega A">Italy Lega A</option><option value="Germany BBL">Germany BBL</option><option value="France LNB">France LNB</option><option value="FIBA World Cup">FIBA World Cup</option><option value="EuroBasket">EuroBasket</option><option value="NBA Playoffs">NBA Playoffs</option><option value="NCAA Football">NCAA Football</option><option value="NFL Playoffs">NFL Playoffs</option><option value="Super Bowl">Super Bowl</option><option value="MLB">MLB</option><option value="MLB Playoffs">MLB Playoffs</option><option value="World Series">World Series</option><option value="NHL">NHL</option><option value="NHL Playoffs">NHL Playoffs</option><option value="Stanley Cup">Stanley Cup</option><option value="Grand Slams">Grand Slams</option><option value="UFC">UFC</option><option value="Boxing">Boxing</option><option value="Volleyball">Volleyball</option><option value="Handball">Handball</option><option value="Rugby">Rugby</option><option value="Cricket">Cricket</option><option value="Other">Other</option></select>
+</div>
+</div>
+<div class="inline-range">
+<div class="input-group">
+<label for="betOddsProp">Odds</label>
+<input id="betOddsProp" min="1.01" placeholder="1.90" step="0.01" type="number"/>
+</div>
+<div class="input-group">
+<label for="betUnitsProp">Units</label>
+<input id="betUnitsProp" min="0.01" step="0.01" type="number" value="10"/>
+</div>
+</div>
+<div class="inline-range">
+<div class="input-group">
+<label for="betEdgeProp">Edge % (optional)</label>
+<input id="betEdgeProp" placeholder="3.5" step="0.1" type="number"/>
+</div>
+<div class="input-group">
+<label for="betResultProp">Result</label>
+<select id="betResultProp">
+<option value="pending">Pending</option>
+<option value="win">Win</option>
+<option value="loss">Loss</option>
+<option value="push">Push</option>
+</select>
+</div>
+</div>
+<div class="input-group" style="flex-direction:row;align-items:center;gap:11px;margin-top:10px;">
+<input id="betLiveProp" style="width:22px;height:22px;accent-color:#00ff88;" type="checkbox"/>
+<label for="betLiveProp" style="margin:0;font-size:13px;text-transform:none;letter-spacing:0;cursor:pointer;">Other pregame market</label>
+</div>
+<button id="addBetProp" style="margin-top:20px;background:linear-gradient(135deg,#00ff88,#00cc66);" type="button">Add Bet</button>
+</div>
+<!-- Table Proportional -->
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>League</th>
+<th>Odds</th>
+<th>Units</th>
+<th>Edges (4 methods)</th>
+<th>P/L</th>
+<th>Result</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="betsTableProp"><tr><td colspan="8" style="text-align:center;padding:30px;color:#7a8fa6;">No bets match your filters 📭</td></tr></tbody>
+</table>
+</div>
+<div class="button-group">
+<button id="exportCsvProp" type="button">📥 Export CSV</button>
+<button class="button-danger" id="clearAllProp" type="button">🗑 Clear All</button>
+</div>
+</div>
+<!-- CALCULATOR TAB -->
+<div class="tab-content" id="calculatorTab">
+<!-- Pinnacle Edge Calculator -->
+<div class="input-section">
+<h2 style="font-size:16px; margin-bottom:16px; color:#00d4ff;">⚡ Pinnacle Edge Calculator · 4 De-Vig Methods</h2>
+<div class="input-group">
+<label for="marketType">Market Type</label>
+<select id="marketType">
+<option value="2way">2-Way (Home/Away)</option>
+<option value="3way">3-Way (1X2)</option>
+</select>
+</div>
+<div class="small-label" style="margin-top:16px;">Pinnacle Odds</div>
+<div class="inline-range">
+<div class="input-group">
+<label for="pinnHome">Home/1</label>
+<input id="pinnHome" min="1.01" placeholder="1.90" step="0.01" type="number"/>
+</div>
+<div class="input-group" id="pinnDrawGroup" style="display: none;">
+<label for="pinnDraw">Draw/X</label>
+<input id="pinnDraw" min="1.01" placeholder="3.40" step="0.01" type="number"/>
+</div>
+<div class="input-group">
+<label for="pinnAway">Away/2</label>
+<input id="pinnAway" min="1.01" placeholder="4.50" step="0.01" type="number"/>
+</div>
+</div>
+<div class="small-label" style="margin-top:16px;">Your Odds</div>
+<div class="inline-range">
+<div class="input-group">
+<label for="yourHome">Home/1</label>
+<input id="yourHome" min="1.01" placeholder="2.00" step="0.01" type="number"/>
+</div>
+<div class="input-group" id="yourDrawGroup" style="display: none;">
+<label for="yourDraw">Draw/X</label>
+<input id="yourDraw" min="1.01" placeholder="3.50" step="0.01" type="number"/>
+</div>
+<div class="input-group">
+<label for="yourAway">Away/2</label>
+<input id="yourAway" min="1.01" placeholder="4.00" step="0.01" type="number"/>
+</div>
+</div>
+<button id="calculateEdge" type="button">Calculate Edge</button>
+</div>
+<!-- Calculation History -->
+<div class="filter-section">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+<h2 style="font-size:16px; color:#00d4ff;">📋 Calculation History</h2>
+<button id="clearHistory" style="width:auto;margin:0;padding:8px 16px;font-size:11px;background:rgba(255,51,102,0.3);color:#ff3366;" type="button">Clear History</button>
+</div>
+<div id="historyList"><div class="empty-state"><div class="empty-state-icon">📊</div>No calculations yet!</div></div>
+</div>
+</div>
+</div>
+<!-- Modals -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<!-- Delete modals for both methods -->
+<div class="modal" id="deleteModalProp">
+<div class="modal-icon">⚠️</div>
+<h3>Προειδοποίηση</h3>
+<p>Διαγραφή Proportional bet;<br/><span class="user-name">George</span>, είσαι σίγουρος;</p>
+<div class="modal-buttons">
+<button class="btn-cancel" type="button">Άκυρο</button>
+<button class="btn-confirm" type="button">Ναι, Διέγραψε</button>
+</div>
+</div>
+<div class="modal" id="deleteModalPower">
+<div class="modal-icon">⚠️</div>
+<h3>Προειδοποίηση</h3>
+<p>Διαγραφή Power bet;<br/><span class="user-name">George</span>, είσαι σίγουρος;</p>
+<div class="modal-buttons">
+<button class="btn-cancel" type="button">Άκυρο</button>
+<button class="btn-confirm" type="button">Ναι, Διέγραψε</button>
+</div>
+</div>
+<div class="modal" id="clearAllModalProp">
+<div class="modal-icon">🗑️</div>
+<h3>Προειδοποίηση</h3>
+<p>Διαγραφή ΟΛΩΝ των Proportional bets;<br/><span class="user-name">George</span>, είσαι σίγουρος;</p>
+<div class="modal-buttons">
+<button class="btn-cancel" type="button">Άκυρο</button>
+<button class="btn-confirm" type="button">Ναι, Διέγραψε Όλα</button>
+</div>
+</div>
+<div class="modal" id="clearAllModalPower">
+<div class="modal-icon">🗑️</div>
+<!-- IMPORT POWER MODAL -->
+<div aria-labelledby="importModalPowerTitle" aria-modal="true" class="modal" id="importModalPower" role="dialog">
+<h3 id="importModalPowerTitle" style="margin-top:0;">📤 Import POWER Bets</h3>
+<p style="margin:8px 0 14px; color:#a8bed4; line-height:1.4;">
+    Paste <b>CSV</b> (with header) or <b>JSON</b> (array of bets). Supported columns/keys: <code>date</code>, <code>league</code>, <code>odds</code>, <code>units</code>, <code>edge</code>, <code>result</code> (win/loss/push/pending), optional <code>live</code>.
+  </p>
+<textarea id="importTextPower" style="width:100%; min-height:160px; resize:vertical; background:#0f1623; color:#e6f3ff; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size:12px;"></textarea>
+<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:12px; flex-wrap:wrap;">
+<label style="display:flex; gap:8px; align-items:center; color:#cfe4f7;">
+<input checked="" id="importReplacePower" type="checkbox"/>
+      Replace existing POWER bets
+    </label>
+<div class="button-group" style="margin:0;">
+<button class="button-secondary" id="closeImportPower" type="button">Cancel</button>
+<button id="doImportPower" style="background:linear-gradient(135deg,#00d4ff,#0099ff);" type="button">Import</button>
+</div>
+</div>
+<details style="margin-top:12px;">
+<summary style="cursor:pointer; color:#7fb6d9;">Examples</summary>
+<pre style="white-space:pre-wrap; margin-top:10px; padding:12px; border-radius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:#cfe4f7;">CSV:
+date,league,odds,units,edge,result,live
+2025-12-28,NBA,1.91,2,4.5,win,false
+12/30/2025,EPL,-110,1.5,3.2,loss,true
+
+JSON:
+[
+  {"date":"2025-12-28","league":"NBA","odds":1.91,"units":2,"edge":4.5,"result":"win","live":false},
+  {"date":"2025-12-30","league":"EPL","odds":"-110","units":1.5,"edge":3.2,"result":"loss","live":true}
+]</pre>
+</details>
+</div>
+<h3>Προειδοποίηση</h3>
+<p>Διαγραφή ΟΛΩΝ των Power bets;<br/><span class="user-name">George</span>, είσαι σίγουρος;</p>
+<div class="modal-buttons">
+<button class="btn-cancel" type="button">Άκυρο</button>
+<button class="btn-confirm" type="button">Ναι, Διέγραψε Όλα</button>
+</div>
+</div>
+<div class="modal" id="clearHistoryModal">
+<div class="modal-icon">🧹</div>
+<h3>Προειδοποίηση</h3>
+<p>Καθαρισμός ιστορικού υπολογισμών;<br/><span class="user-name">George</span>, είσαι σίγουρος;</p>
+<div class="modal-buttons">
+<button class="btn-cancel" type="button">Άκυρο</button>
+<button class="btn-confirm" type="button">Ναι, Καθάρισε</button>
+</div>
+</div>
+<div class="modal" id="removeHistoryModal">
+<div class="modal-icon">🗑️</div>
+<h3>Προειδοποίηση</h3>
+<p>Διαγραφή υπολογισμού από ιστορικό;<br/><span class="user-name">George</span>, είσαι σίγουρος;</p>
+<div class="modal-buttons">
+<button class="btn-cancel" type="button">Άκυρο</button>
+<button class="btn-confirm" type="button">Ναι, Διέγραψε</button>
+</div>
+</div>
+<div class="modal edit-modal" id="addFromHistoryModal">
+<h3>✅ Add Bet from Calculation</h3>
+<div class="input-group">
+<label>Select Method</label>
+<select id="histMethod">
+<option value="proportional">📊 Proportional</option>
+<option value="power">⚡ Power</option>
+</select>
+</div>
+<div class="inline-range">
+<div class="input-group">
+<label for="histDate">Date</label>
+<input id="histDate" type="date"/>
+</div>
+<div class="input-group">
+<label for="histLeague">League</label>
+<select id="histLeague"><option value="Premier League">Premier League</option><option value="La Liga">La Liga</option><option value="Serie A">Serie A</option><option value="Bundesliga">Bundesliga</option><option value="Ligue 1">Ligue 1</option><option value="UCL">UCL</option><option value="Europa League">Europa League</option><option value="NBA">NBA</option><option value="NFL">NFL</option><option value="Tennis ATP">Tennis ATP</option><option value="Tennis WTA">Tennis WTA</option><option value="Eredivisie">Eredivisie</option><option value="Primeira Liga">Primeira Liga</option><option value="Super League 1">Super League 1</option><option value="Scottish Premiership">Scottish Premiership</option><option value="Belgian Pro League">Belgian Pro League</option><option value="Super Lig">Super Lig</option><option value="Austrian Bundesliga">Austrian Bundesliga</option><option value="Swiss Super League">Swiss Super League</option><option value="EFL Cup">EFL Cup</option><option value="FA Cup">FA Cup</option><option value="Copa del Rey">Copa del Rey</option><option value="Coppa Italia">Coppa Italia</option><option value="DFB Pokal">DFB Pokal</option><option value="Coupe de France">Coupe de France</option><option value="Greek Cup">Greek Cup</option><option value="Taça de Portugal">Taça de Portugal</option><option value="KNVB Beker">KNVB Beker</option><option value="Turkish Cup">Turkish Cup</option><option value="Conference League">Conference League</option><option value="World Cup">World Cup</option><option value="Euro Championship">Euro Championship</option><option value="Copa America">Copa America</option><option value="UEFA Nations League">UEFA Nations League</option><option value="Championship">Championship</option><option value="Segunda Division">Segunda Division</option><option value="Serie B">Serie B</option><option value="2. Bundesliga">2. Bundesliga</option><option value="Ligue 2">Ligue 2</option><option value="Super League 2">Super League 2</option><option value="MLS">MLS</option><option value="Liga MX">Liga MX</option><option value="Campeonato Brasileiro">Campeonato Brasileiro</option><option value="Copa Libertadores">Copa Libertadores</option><option value="Copa Sudamericana">Copa Sudamericana</option><option value="Copa do Brasil">Copa do Brasil</option><option value="Copa MX">Copa MX</option><option value="US Open Cup">US Open Cup</option><option value="Leagues Cup">Leagues Cup</option><option value="Euroleague">Euroleague</option><option value="Eurocup">Eurocup</option><option value="Greek Basket League">Greek Basket League</option><option value="Spain ACB">Spain ACB</option><option value="Italy Lega A">Italy Lega A</option><option value="Germany BBL">Germany BBL</option><option value="France LNB">France LNB</option><option value="FIBA World Cup">FIBA World Cup</option><option value="EuroBasket">EuroBasket</option><option value="NBA Playoffs">NBA Playoffs</option><option value="NCAA Football">NCAA Football</option><option value="NFL Playoffs">NFL Playoffs</option><option value="Super Bowl">Super Bowl</option><option value="MLB">MLB</option><option value="MLB Playoffs">MLB Playoffs</option><option value="World Series">World Series</option><option value="NHL">NHL</option><option value="NHL Playoffs">NHL Playoffs</option><option value="Stanley Cup">Stanley Cup</option><option value="Grand Slams">Grand Slams</option><option value="UFC">UFC</option><option value="Boxing">Boxing</option><option value="Volleyball">Volleyball</option><option value="Handball">Handball</option><option value="Rugby">Rugby</option><option value="Cricket">Cricket</option><option value="Other">Other</option></select>
+</div>
+</div>
+<div class="input-group">
+<label for="histOutcome">Outcome</label>
+<input id="histOutcome" readonly="" style="background:rgba(0,212,255,0.1);" type="text"/>
+</div>
+<div class="inline-range">
+<div class="input-group">
+<label for="histOdds">Your Odds</label>
+<input id="histOdds" readonly="" step="0.01" style="background:rgba(0,212,255,0.1);" type="number"/>
+</div>
+<div class="input-group">
+<label for="histEdge">Edge %</label>
+<input id="histEdge" readonly="" step="0.1" style="background:rgba(0,212,255,0.1);" type="number"/>
+</div>
+</div>
+<div class="input-group">
+<label for="histUnits">Units</label>
+<input id="histUnits" min="0.01" step="0.01" type="number" value="10"/>
+</div>
+<div class="input-group">
+<label for="histResult">Result</label>
+<select id="histResult">
+  <option value="pending">Pending</option>
+  <option value="win">Win</option>
+  <option value="loss">Loss</option>
+  <option value="push">Push</option>
+</select>
+</div>
+<div class="input-group" style="flex-direction:row;align-items:center;gap:10px;">
+<input id="histLive" style="width:20px;height:20px;accent-color:#00d4ff;" type="checkbox"/>
+<label for="histLive" style="margin:0;font-size:12px;text-transform:none;letter-spacing:0;">Other pregame market</label>
+</div>
+<div class="modal-buttons" style="margin-top:20px;">
+<button class="btn-cancel" type="button">Άκυρο</button>
+<button class="btn-confirm" style="background:linear-gradient(135deg,#00ff88,#00cc66);" type="button">Add Bet</button>
+</div>
+</div>
+<!-- VERSION RIBBON (v28) -->
+<script>
+/* v20 persistent sandbox: namespaced storage; production ba_* keys untouched. */
+const localStorage = (() => {
+  const real = window.localStorage;
+  const prefix = '__BA_V20_SANDBOX_20261014__';
+  const api = {
+    getItem(k) { return real.getItem(prefix + String(k)); },
+    setItem(k,v) {
+      const storageKey = prefix + String(k), value = String(v);
+      try {
+        real.setItem(storageKey, value);
+        if (real.getItem(storageKey) !== value) throw new Error('Read-back verification failed');
+      } catch (err) {
+        const msg = '⚠️ Η αποθήκευση ΔΕΝ ολοκληρώθηκε. Μην θεωρείς ότι σώθηκε το στοίχημα. ' + (err?.message || err);
+        let alertBox = document.getElementById('v20-storage-error');
+        if (!alertBox) {
+          alertBox = document.createElement('div');
+          alertBox.id = 'v20-storage-error';
+          alertBox.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#9a1623;color:white;padding:16px;font:700 16px sans-serif;text-align:center';
+          document.body.appendChild(alertBox);
+        }
+        alertBox.textContent = msg;
+        window.alert(msg);
+        throw err;
+      }
+    },
+    removeItem(k) { real.removeItem(prefix + String(k)); },
+    clear() { for (const k of Object.keys(real)) if (k.startsWith(prefix)) real.removeItem(k); },
+    key(i) { return Object.keys(real).filter(k=>k.startsWith(prefix))[i]?.slice(prefix.length) ?? null; },
+    get length() { return Object.keys(real).filter(k=>k.startsWith(prefix)).length; }
+  };
+  return new Proxy(api, {
+    ownKeys() { return Object.keys(real).filter(k=>k.startsWith(prefix)).map(k=>k.slice(prefix.length)); },
+    getOwnPropertyDescriptor(t,k) { if (typeof k==='string' && real.getItem(prefix+k)!==null) return {configurable:true,enumerable:true,value:real.getItem(prefix+k),writable:true}; return Reflect.getOwnPropertyDescriptor(t,k); }
+  });
+})();
+</script>
+<script>
+(function(){
+  // --- v16 patch: make All Leagues truly mean ALL, and reset filters after seeding ---
+  function qs(sel){return document.querySelector(sel);}
+  function qsa(sel){return Array.from(document.querySelectorAll(sel));}
+
+  function getPowerBets(){
+    try{
+      // try multiple known keys
+      const keys = ["ba_power_bets_v9", "ba_power_bets", "powerBets", "BA_POWER_BETS"];
+      for(const k of keys){
+        const v = localStorage.getItem(k);
+        if(v){
+          const parsed = JSON.parse(v);
+          if(Array.isArray(parsed)) return parsed;
+        }
+      }
+    }catch(e){}
+    // fall back: global variable some versions use
+    if(Array.isArray(window.powerBets)) return window.powerBets;
+    if(Array.isArray(window.POWER_BETS)) return window.POWER_BETS;
+    return [];
+  }
+
+  function getSelectedLeagues(){
+    // Try to locate league checkboxes in POWER panel
+    const allToggle = qs('input[type="checkbox"][data-role="all-leagues"], input[type="checkbox"]#allLeagues, input[type="checkbox"][name="allLeagues"]');
+    const leagueBoxes = qsa('input[type="checkbox"][data-role="league"], input[type="checkbox"].league-checkbox, input[type="checkbox"][name="league"]');
+    const allChecked = allToggle ? !!allToggle.checked : false;
+
+    if(allChecked || leagueBoxes.length===0){
+      return null; // null => ALL leagues
+    }
+    const selected = new Set();
+    for(const cb of leagueBoxes){
+      if(cb.checked){
+        const v = (cb.value || cb.getAttribute("data-league") || cb.getAttribute("aria-label") || "").trim();
+        if(v) selected.add(v);
+      }
+    }
+    // If nothing selected, treat as ALL (more user-friendly)
+    if(selected.size===0) return null;
+    return selected;
+  }
+
+  function applyLeagueFilter(bets){
+    const sel = getSelectedLeagues();
+    if(sel===null) return bets;
+    return bets.filter(b => sel.has(String(b.league||"").trim()));
+  }
+
+  function updateRibbon(){
+    const allBets = getPowerBets();
+    const filtered = applyLeagueFilter(allBets);
+    const seedEl = qs("#ba-seed-count");
+    const filtEl = qs("#ba-filter-count");
+    if(seedEl) seedEl.textContent = allBets.length;
+    if(filtEl) filtEl.textContent = filtered.length;
+  }
+
+  function forceAllLeaguesUI(){
+    // Ensure "All Leagues" toggles all league checkboxes, and when any league is unchecked, All Leagues turns off.
+    const allToggle = qs('input[type="checkbox"][data-role="all-leagues"], input[type="checkbox"]#allLeagues, input[type="checkbox"][name="allLeagues"]');
+    const leagueBoxes = qsa('input[type="checkbox"][data-role="league"], input[type="checkbox"].league-checkbox, input[type="checkbox"][name="league"]');
+    if(!allToggle || leagueBoxes.length===0) return;
+
+    function setAll(on){
+      for(const cb of leagueBoxes){ cb.checked = !!on; }
+    }
+
+    // initialize: if All Leagues checked, enforce all on
+    if(allToggle.checked) setAll(true);
+
+    allToggle.addEventListener("change", () => {
+      if(allToggle.checked) setAll(true);
+      updateRibbon();
+      // trigger any existing app refresh hooks
+      document.dispatchEvent(new CustomEvent("ba:filters-changed"));
+    });
+
+    for(const cb of leagueBoxes){
+      cb.addEventListener("change", () => {
+        const allOn = leagueBoxes.every(x => x.checked);
+        allToggle.checked = allOn;
+        updateRibbon();
+        document.dispatchEvent(new CustomEvent("ba:filters-changed"));
+      });
+    }
+  }
+
+  function hardResetPowerFilters(){
+    // Set bet type to "All bets" if a select exists
+    const sel = qs('select#powerBetType, select[name="powerBetType"], select[data-role="bet-type"]');
+    if(sel){
+      // pick option containing "All"
+      const opt = Array.from(sel.options).find(o => /all/i.test(o.textContent||""));
+      if(opt) sel.value = opt.value;
+    }
+    // Edge range inputs
+    const edgeFrom = qs('input#powerEdgeFrom, input[name="powerEdgeFrom"], input[data-role="edge-from"]');
+    const edgeTo   = qs('input#powerEdgeTo, input[name="powerEdgeTo"], input[data-role="edge-to"]');
+    if(edgeFrom) edgeFrom.value = "";
+    if(edgeTo) edgeTo.value = "";
+
+    // leagues: turn on All Leagues
+    const allToggle = qs('input[type="checkbox"][data-role="all-leagues"], input[type="checkbox"]#allLeagues, input[type="checkbox"][name="allLeagues"]');
+    if(allToggle){ allToggle.checked = true; allToggle.dispatchEvent(new Event("change", {bubbles:true})); }
+    updateRibbon();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Wait a tick for app to seed/load
+    setTimeout(() => {
+      forceAllLeaguesUI();
+      // hard reset ONLY once per new file open (avoid fighting user)
+      if(!sessionStorage.getItem("ba_v17_reset_done")){
+        sessionStorage.setItem("ba_v17_reset_done","1");
+        hardResetPowerFilters();
+      }
+      updateRibbon();
+    }, 60);
+
+    // if app triggers re-render on custom event, keep ribbon in sync
+    document.addEventListener("ba:filters-changed", () => setTimeout(updateRibbon, 0));
+  });
+
+  // periodically sync ribbon in case the app updates from other actions
+  setInterval(updateRibbon, 1000);
+})();
+</script>
+<script>
+(function(){
+  function el(id){return document.getElementById(id);}
+  function syncAllLeagues(){
+    const all = el('allLeaguesPower');
+    const grid = el('leagueGridPower');
+    if(!all || !grid) return;
+    const boxes = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
+    // ensure values
+    boxes.forEach(b=>{
+      if(!b.value || b.value==='on'){
+        const lab = grid.querySelector(`label[for="${b.id}"]`);
+        if(lab) b.value = (lab.textContent||'').trim();
+      }
+    });
+    if(all.checked){
+      boxes.forEach(b=>{b.checked = true;});
+    }else{
+      // if user manually checks all boxes, keep All Leagues ON
+      const checkedCount = boxes.filter(b=>b.checked).length;
+      if(boxes.length>0 && checkedCount===boxes.length){
+        all.checked = true;
+      }
+    }
+    if(typeof render === 'function'){ render('power'); }
+  }
+  document.addEventListener('change', (e)=>{
+    if(e.target && (e.target.id==='allLeaguesPower' || (e.target.closest && e.target.closest('#leagueGridPower')))){
+      // If any league checkbox changed, keep All Leagues in sync
+      if(e.target.id!=='allLeaguesPower'){
+        const all = el('allLeaguesPower');
+        const grid = el('leagueGridPower');
+        const boxes = grid ? Array.from(grid.querySelectorAll('input[type="checkbox"]')) : [];
+        const checkedCount = boxes.filter(b=>b.checked).length;
+        if(all){
+          all.checked = (boxes.length>0 && checkedCount===boxes.length);
+        }
+      }
+      syncAllLeagues();
+    }
+  }, true);
+  // Run once after load
+  window.addEventListener('load', ()=>{ syncAllLeagues(); });
+})();
+</script>
+<script>
+(function(){
+  const EXTRA_LEAGUES = ['United Cup', 'Davis Cup', 'Billie Jean King Cup', 'ATP Finals', 'WTA Finals', 'ATP Masters 1000', 'ATP 500', 'ATP 250', 'WTA 1000', 'WTA 500', 'WTA 250', 'ATP Challenger', 'ITF Tennis', 'Olympics (Tennis)', 'Africa Cup of Nations', 'CAF Champions League', 'CAF Confederation Cup', 'Asian Cup', 'AFC Champions League', 'AFC Cup', 'CONCACAF Gold Cup', 'CONCACAF Champions Cup', 'Copa America', 'WC Qualifiers', 'International Friendlies', 'Nations League', 'ATP/WTA Exhibitions'];
+  const CUSTOM_LEAGUES_KEY = 'ba_custom_leagues_v18';
+
+  function loadCustomLeagues(){
+    try{
+      const raw = localStorage.getItem(CUSTOM_LEAGUES_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.map(x=>String(x||'').trim()).filter(Boolean) : [];
+    }catch(e){ return []; }
+  }
+
+  function saveCustomLeague(name){
+    const clean = String(name || '').trim();
+    if(!clean) return;
+    const arr = loadCustomLeagues();
+    if(!arr.includes(clean)) arr.push(clean);
+    try{ localStorage.setItem(CUSTOM_LEAGUES_KEY, JSON.stringify(arr)); }catch(e){}
+  }
+
+  function discoverPersistedLeagues(){
+    const out = [];
+    const add = x => {
+      const v = String(x || '').trim();
+      if(v && v !== 'Other' && v !== 'Unknown' && !out.includes(v)) out.push(v);
+    };
+    try{
+      const arr = JSON.parse(localStorage.getItem('ba_dual_bets_prop_v1') || '[]');
+      if(Array.isArray(arr)) arr.forEach(b=>add(b && b.league));
+    }catch(e){}
+    try{
+      const draft = JSON.parse(localStorage.getItem('ba_draft_prop_v17') || '{}');
+      add(draft && draft.betLeagueProp);
+    }catch(e){}
+    try{
+      const filt = JSON.parse(localStorage.getItem('ba_filters_prop_v17') || '{}');
+      if(Array.isArray(filt && filt.leagues)) filt.leagues.forEach(add);
+    }catch(e){}
+    return out;
+  }
+
+
+  function uniqPush(arr, item){
+    if(!arr.includes(item)) arr.push(item);
+  }
+
+  function ensureOption(selectEl, league){
+    if(!selectEl) return;
+    const exists = Array.from(selectEl.options).some(o => (o.value || o.textContent).trim() === league);
+    if(exists) return;
+    const opt = document.createElement('option');
+    opt.value = league;
+    opt.textContent = league;
+    // Insert before "Other" if present
+    const other = Array.from(selectEl.options).find(o => (o.value || o.textContent).trim() === 'Other');
+    if(other) selectEl.insertBefore(opt, other);
+    else selectEl.appendChild(opt);
+  }
+
+  function ensureCheckbox(gridEl, idPrefix, league){
+    if(!gridEl) return;
+    const labels = Array.from(gridEl.querySelectorAll('label')).map(l => (l.textContent||'').trim());
+    if(labels.includes(league)) return;
+
+    const boxes = Array.from(gridEl.querySelectorAll('input[type="checkbox"]'));
+    let nextIdx = 0;
+    for(const b of boxes){
+      const m = (b.id || '').match(new RegExp('^' + idPrefix + '_([0-9]+)$'));
+      if(m) nextIdx = Math.max(nextIdx, parseInt(m[1],10)+1);
+    }
+    const id = idPrefix + '_' + nextIdx;
+
+    const item = document.createElement('div');
+    item.className = 'league-item';
+
+    const inp = document.createElement('input');
+    inp.type = 'checkbox';
+    inp.id = id;
+    inp.value = league;
+
+    const lab = document.createElement('label');
+    lab.setAttribute('for', id);
+    lab.textContent = league;
+
+    item.appendChild(inp);
+    item.appendChild(lab);
+
+    // insert before Other league item if present
+    let inserted = false;
+    const otherLabel = Array.from(gridEl.querySelectorAll('label')).find(l => (l.textContent||'').trim() === 'Other');
+    if(otherLabel){
+      const otherItem = otherLabel.closest('.league-item');
+      if(otherItem && otherItem.parentNode === gridEl){
+        gridEl.insertBefore(item, otherItem);
+        inserted = true;
+      }
+    }
+    if(!inserted) gridEl.appendChild(item);
+  }
+
+  function syncAllLeagues(allId, gridId){
+    const all = document.getElementById(allId);
+    const grid = document.getElementById(gridId);
+    if(!all || !grid) return;
+    if(all.checked){
+      grid.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+    }else{
+      // if all boxes are checked, flip All Leagues to checked
+      const boxes = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
+      if(boxes.length && boxes.every(b=>b.checked)) all.checked = true;
+    }
+    // Trigger re-render via the grid change handler in the app
+    grid.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+
+  
+  function attachCustomLeague(selectId){
+    const sel = document.getElementById(selectId);
+    if(!sel) return;
+    sel.addEventListener('change', ()=>{
+      const val = (sel.value || '').trim();
+      if(val !== 'Other') return;
+      const name = (prompt('League name (custom):') || '').trim();
+      if(!name){
+        // fallback to first option
+        if(sel.options.length) sel.selectedIndex = 0;
+        return;
+      }
+      saveCustomLeague(name);
+
+      // add everywhere and select it
+      const grids = [
+        {grid:'leagueGridProp', prefix:'lg_Prop', all:'allLeaguesProp'},
+        {grid:'leagueGridPower', prefix:'lg_Power', all:'allLeaguesPower'},
+      ];
+      const selects = ['betLeagueProp','betLeaguePower','histLeague'];
+      for(const sid of selects) ensureOption(document.getElementById(sid), name);
+      for(const g of grids) ensureCheckbox(document.getElementById(g.grid), g.prefix, name);
+
+      sel.value = name;
+
+      // if All Leagues is checked in either tab, include the new league too
+      for(const g of grids){
+        const all = document.getElementById(g.all);
+        const gridEl = document.getElementById(g.grid);
+        if(all && all.checked && gridEl){
+          gridEl.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+          gridEl.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+      }
+    });
+  }
+
+  function run(){
+
+    const grids = [
+      {grid:'leagueGridProp', prefix:'lg_Prop'},
+      {grid:'leagueGridPower', prefix:'lg_Power'},
+    ];
+    const selects = ['betLeagueProp','betLeaguePower','histLeague'];
+
+    const allKnownLeagues = [];
+    for(const name of [...EXTRA_LEAGUES, ...loadCustomLeagues(), ...discoverPersistedLeagues()]){
+      if(name && !allKnownLeagues.includes(name)) allKnownLeagues.push(name);
+    }
+
+    for(const league of allKnownLeagues){
+      for(const sid of selects) ensureOption(document.getElementById(sid), league);
+      for(const g of grids) ensureCheckbox(document.getElementById(g.grid), g.prefix, league);
+    }
+
+    // Persist recovered non-built-in names for deterministic future reloads.
+    discoverPersistedLeagues().forEach(name=>{
+      if(!EXTRA_LEAGUES.includes(name)) saveCustomLeague(name);
+    });
+
+    // Custom league via "Other" option (no UI change; prompt only)
+    attachCustomLeague('betLeagueProp');
+    attachCustomLeague('betLeaguePower');
+    attachCustomLeague('histLeague');
+
+    // Keep the two tabs in sync re: All Leagues
+    syncAllLeagues('allLeaguesProp','leagueGridProp');
+    syncAllLeagues('allLeaguesPower','leagueGridPower');
+  }
+
+  // Initialise immediately: this script is below the relevant HTML and must run
+  // before the main app restores league filters/drafts.
+  if(document.getElementById('betLeagueProp')){
+    run();
+  }else{
+    document.addEventListener('DOMContentLoaded', run, {once:true});
+  }
+})();
+</script>
+<script>
+// PATCH: ensure any stray modal/overlay is hidden on load (prevents blocking clicks)
+window.addEventListener('load', () => {
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    if (getComputedStyle(o).display !== 'none') o.style.display = 'none';
+    o.classList.remove('show');
+  });
+  document.querySelectorAll('.modal').forEach(m => {
+    if (getComputedStyle(m).display !== 'none') m.style.display = 'none';
+  });
+});
+</script>
+
+<script>
+(function(){
+  function hardenButtons(){
+    try{
+      document.querySelectorAll('form').forEach(function(f){
+        f.addEventListener('submit', function(e){ e.preventDefault(); }, true);
+      });
+      // Defensive: any button click should not submit forms on iOS
+      document.addEventListener('click', function(e){
+        var btn = e.target.closest && e.target.closest('button');
+        if(!btn) return;
+        // If any stray submit sneaks in, block it
+        if(btn.getAttribute('type') === 'submit'){
+          // We don't use native submit flow; app uses click handlers.
+          e.preventDefault();
+        }
+      }, true);
+    }catch(err){}
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', hardenButtons);
+  } else {
+    hardenButtons();
+  }
+})();
+</script>
+
+<script>
+
+/* v20 backup/restore utility: explicit user action only; no automatic mutation. */
+(function(){
+'use strict';
+// Back up ONLY BetAnalytics keys; never export unrelated same-origin data.
+// Restore is restricted to ba_* keys.
+const isBetKey=k=>typeof k==='string' && /^ba_[A-Za-z0-9_]+$/.test(k);
+const allKeys=()=>Object.keys(localStorage).filter(isBetKey).sort();
+
+const REQUIRED=['ba_dual_bets_prop_v1','ba_dual_bets_power_191seed_v2','ba_dual_calc_history_v1'];
+const panel=document.createElement('section');panel.id='v20BackupPanel';
+panel.style.cssText='position:relative;margin:16px auto;padding:14px;max-width:850px;border:2px solid #7b8ca8;border-radius:12px;background:#101d32;color:white;font:14px system-ui;';
+panel.innerHTML='<strong>🔒 v20 Data Safety</strong><p>Backup saves your browser data as a JSON file. Restore is manual, validated, and replaces the listed data only after confirmation. Keep the backup outside Safari.</p><button type="button" id="v20BackupBtn">Download full backup</button> <button type="button" id="v20RestoreBtn">Review restore file</button><input type="file" id="v20RestoreFile" accept=".json,application/json" hidden><pre id="v20RestoreStatus" style="white-space:pre-wrap;word-break:break-word"></pre>';
+document.body.insertBefore(panel,document.body.firstChild);
+const status=document.getElementById('v20RestoreStatus');
+function snap(){return {format:'betanalytics-v20-SANDBOX-backup',createdAt:new Date().toISOString(),origin:location.origin,entries:allKeys().filter(k=>localStorage.getItem(k)!==null).map(k=>({key:k,value:localStorage.getItem(k)}))}}
+function download(obj,name){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
+function parseFile(data){if(!data||data.format!=='betanalytics-v20-SANDBOX-backup'||!Array.isArray(data.entries)||data.entries.length>200)throw Error('Invalid backup: entries missing or too many');const map=new Map();for(const e of data.entries){if(!e||typeof e.key!=='string'||typeof e.value!=='string'||e.value.length>25*1024*1024||!isBetKey(e.key)||map.has(e.key))throw Error('Unexpected or duplicate storage key');try{JSON.parse(e.value)}catch{throw Error('Invalid JSON value for '+e.key)}map.set(e.key,e.value)}for(const k of REQUIRED){if(!map.has(k))throw Error('Required data missing: '+k);const v=JSON.parse(map.get(k));if(!Array.isArray(v))throw Error('Required data is not an array: '+k)}for(const k of ['ba_dual_bets_prop_v1','ba_dual_bets_power_191seed_v2']){const a=JSON.parse(map.get(k));if(a.some(x=>!x||typeof x!=='object'||Array.isArray(x)))throw Error('Invalid bet records: '+k);if(a.some(x=>x.id==null))throw Error('Missing bet ID: '+k);const ids=a.map(x=>String(x.id));if(new Set(ids).size!==ids.length)throw Error('Duplicate bet IDs: '+k)}return map}
+function count(map,k){return JSON.parse(map.get(k)).length}
+document.getElementById('v20BackupBtn').onclick=()=>{try{const s=snap();download(s,'betanalytics-v20-SANDBOX-backup-'+new Date().toISOString().slice(0,10)+'.json');status.textContent='Backup download requested. Verify that the file was saved in Files before proceeding.'}catch(e){status.textContent='Backup failed: '+e.message}};
+document.getElementById('v20RestoreBtn').onclick=()=>document.getElementById('v20RestoreFile').click();
+document.getElementById('v20RestoreFile').onchange=async function(){try{const f=this.files[0];if(!f)return;if(f.size>25*1024*1024)throw Error('File exceeds 25 MB');const data=JSON.parse(await f.text());const map=parseFile(data);const current=snap();const currentMap=new Map(current.entries.map(e=>[e.key,e.value]));
+// Refuse older/shorter backups rather than accidentally discarding newer records.
+for(const k of REQUIRED){
+  if(currentMap.has(k)){
+    let oldData;try{oldData=JSON.parse(currentMap.get(k))}catch{throw Error('Current data unreadable: '+k)}
+    if(!Array.isArray(oldData))throw Error('Current data invalid: '+k);
+    if(count(map,k)<oldData.length)throw Error('Restore blocked: backup has fewer records for '+k+' ('+count(map,k)+' vs '+oldData.length+'). No data changed.');
+    // Equal counts do not prove that the backup contains the same records.
+    // For bet tables, refuse replacement when any current bet ID is missing.
+    if(k==='ba_dual_bets_prop_v1'||k==='ba_dual_bets_power_191seed_v2'){
+      const incoming=JSON.parse(map.get(k));
+      const incomingIds=new Set(incoming.map(b=>String(b.id)));
+      if(oldData.some(b=>!b||b.id==null||!incomingIds.has(String(b.id))))
+        throw Error('Restore blocked: backup is missing existing bet IDs in '+k+'. No data changed.');
+    }
+  }
+}
+const message='RESTORE PREVIEW (no changes yet)\nProportional bets: '+count(map,REQUIRED[0])+' (currently '+(currentMap.has(REQUIRED[0])?count(currentMap,REQUIRED[0]):0)+')\nPower bets: '+count(map,REQUIRED[1])+'\nCalculation history: '+count(map,REQUIRED[2])+'\nKeys to replace: '+map.size+'\nThis will REPLACE existing browser data for these keys. Continue?';status.textContent=message;if(!confirm(message))return;download(current,'betanalytics-SANDBOX-PRE-RESTORE-backup-'+new Date().toISOString().slice(0,10)+'.json');if(!confirm('STOP: Confirm the PRE-RESTORE backup was actually saved in your Files app. Restore and reload now?'))return;const original=new Map([...map.keys()].map(k=>[k,localStorage.getItem(k)]));try{for(const [k,v] of map)localStorage.setItem(k,v);for(const [k,v] of map){if(localStorage.getItem(k)!==v)throw Error('Storage verification failed: '+k)}}catch(e){for(const [k,v] of original){if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}throw Error('Restore failed; rollback attempted: '+e.message)}status.textContent='Restore written and verified. Reloading.';location.reload()}catch(e){status.textContent='Restore cancelled/failed: '+e.message}finally{this.value=''}};
+})();
+
+</script>
+</body>
+<script>
+(function(){
+  'use strict';
+
+  const STORAGE_KEYS = {
+    prop: 'ba_dual_bets_prop_v1',
+    power: 'ba_dual_bets_power_191seed_v2',
+    history: 'ba_dual_calc_history_v1',
+    filtersProp: 'ba_filters_prop_v17',
+    draftProp: 'ba_draft_prop_v17',
+    draftCalc: 'ba_draft_calc_v17'
+  };
+  const BET_SCHEMA_VERSION = 4;
+
+  // --- Auto-seeded POWER bets (from uploaded CSV) ---
+  // Loaded only if your browser has no existing POWER data yet.
+  const SEED_POWER_BETS = [];
+  // v18 SAFETY: never auto-clear existing bets/history from localStorage.
+
+const el = (id) => document.getElementById(id);
+
+  function safeNum(v){
+    if(v === null || v === undefined) return null;
+    const s = String(v).trim().replace('%','').replace(',', '.');
+    if(!s) return null;
+    const n = Number(s);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function optionalNum(v){
+    if(v === null || v === undefined || v === '') return NaN;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : NaN;
+  }
+
+  function formatNum(n, decimals=2){
+    if(!Number.isFinite(n)) return '-';
+    return n.toFixed(decimals);
+  }
+
+  function formatPct(n, decimals=2){
+    if(!Number.isFinite(n)) return '-';
+    const sign = n > 0 ? '+' : '';
+    return sign + n.toFixed(decimals) + '%';
+  }
+
+  function loadArray(key){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) return [];
+      const data = JSON.parse(raw);
+      return Array.isArray(data) ? data : [];
+    }catch(e){ return []; }
+  }
+
+  function saveArray(key, arr){
+    localStorage.setItem(key, JSON.stringify(arr));
+  }
+
+  function loadObject(key){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) return null;
+      const data = JSON.parse(raw);
+      return data && typeof data === 'object' && !Array.isArray(data) ? data : null;
+    }catch(e){ return null; }
+  }
+
+  function saveObject(key, obj){
+    localStorage.setItem(key, JSON.stringify(obj));
+  }
+
+  function uid(){
+    return Math.random().toString(16).slice(2) + Date.now().toString(16);
+  }
+
+  function computePL(odds, units, result){
+    if(!Number.isFinite(odds) || !Number.isFinite(units)) return 0;
+    switch(result){
+      case 'win': return units * (odds - 1);
+      case 'loss': return -units;
+      case 'push': return 0;
+      case 'pending': default: return 0;
+    }
+  }
+
+  function parseDateStr(s){
+    // Expect YYYY-MM-DD
+    if(!s) return null;
+    const t = Date.parse(s + 'T00:00:00');
+    return Number.isFinite(t) ? t : null;
+  }
+
+  function csvEscape(v){
+    const s = String(v ?? '');
+    if(/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+    return s;
+  }
+
+  // ---------------- Tabs ----------------
+  const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
+  const tabContents = Array.from(document.querySelectorAll('.tab-content'));
+
+  function activateTab(targetId, button){
+    tabButtons.forEach(b => b.classList.toggle('active', b === button));
+    tabContents.forEach(c => c.classList.toggle('active', c.id === targetId));
+    // Re-render visible tables for safety
+    render('prop');
+    render('power');
+    renderHistory();
+  }
+
+  // Heuristic mapping:
+  // - proportional button has class proportional-tab
+  // - power button has class power-tab
+  // - calculator is the third button
+  const btnProp = document.querySelector('.tab-btn.proportional-tab');
+  const btnPower = document.querySelector('.tab-btn.power-tab');
+  const btnCalc = tabButtons.find(b => b !== btnProp && b !== btnPower);
+
+  if(btnProp) btnProp.addEventListener('click', () => activateTab('proportionalTab', btnProp));
+  if(btnPower) btnPower.addEventListener('click', () => activateTab('powerTab', btnPower));
+  if(btnCalc) btnCalc.addEventListener('click', () => activateTab('calculatorTab', btnCalc));
+
+  // ---------------- Data ----------------
+  let bets = {
+    prop: loadArray(STORAGE_KEYS.prop),
+    power: loadArray(STORAGE_KEYS.power)
+  };
+  
+  // --- v13 diagnostics badge ---
+  try{
+    const sc = document.getElementById('__seedCount');
+    if(sc) sc.textContent = (Array.isArray(SEED_POWER_BETS)? SEED_POWER_BETS.length : '0');
+  }catch(e){}
+
+  // --- Seed handling (do NOT wipe existing POWER data when no seed is present) ---
+// Older versions used a "force seed" block that overwrote stored POWER bets on every load.
+// That caused POWER bets to disappear after refresh when SEED_POWER_BETS was empty.
+// We only seed if we actually have embedded seed data AND there is no existing POWER data.
+try{
+  const hasSeed = Array.isArray(SEED_POWER_BETS) && SEED_POWER_BETS.length > 0;
+  if(hasSeed && (!Array.isArray(bets.power) || bets.power.length === 0)){
+    bets.power = SEED_POWER_BETS.slice();
+    /* NO AUTO-WRITE ON INITIAL LOAD: power seed only in memory */
+    try{ const lc=document.getElementById('__loadedCount'); if(lc) lc.textContent = bets.power.length; }catch(e){}
+  }
+}catch(e){}
+// --- v13 fix: ensure league checkbox values & All Leagues synchronization on load ---
+function initLeagueGrid(method){
+  const cfg = CFG[method];
+  const all = el(cfg.allLeaguesId);
+  const grid = el(cfg.leagueGridId);
+  if(!grid) return;
+  // Ensure each checkbox has a meaningful value (league name) so filtering works.
+  // The original snapshot often misses the 'value' attribute in the inputs.
+  const items = Array.from(grid.querySelectorAll('.league-item'));
+  for(const item of items){
+    const input = item.querySelector('input[type="checkbox"]');
+    const label = item.querySelector('label');
+    if(input && (!input.value || input.value === 'on') && label){
+      const name = (label.textContent || '').trim();
+      if(name) input.value = name;
+    }
+  }
+  // If "All Leagues" is checked, make sure ALL league checkboxes are actually checked too.
+  if(all && all.checked){
+    grid.querySelectorAll('input[type="checkbox"]').forEach(c => { c.checked = true; });
+  }
+  // If none are checked (can happen after weird restores), treat as All.
+  const boxes = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
+  const anyChecked = boxes.some(b=>b.checked);
+  if(!anyChecked){
+    boxes.forEach(b=>b.checked=true);
+    if(all) all.checked = true;
+  }
+}
+
+try{ initLeagueGrid('prop'); }catch(e){}
+try{ initLeagueGrid('power'); }catch(e){}
+
+// Also reset POWER filters to "All" after seeding to avoid showing a subset (e.g., 34) by accident.
+try{
+  const cfg = CFG.power;
+  if(el(cfg.typeFilterId)) el(cfg.typeFilterId).value = 'all';
+  if(el(cfg.fromDateId)) el(cfg.fromDateId).value = '';
+  if(el(cfg.toDateId)) el(cfg.toDateId).value = '';
+  if(el(cfg.edgeFromId)) el(cfg.edgeFromId).value = '';
+  if(el(cfg.edgeToId)) el(cfg.edgeToId).value = '';
+  const all = el(cfg.allLeaguesId);
+  if(all) all.checked = true;
+  const grid = el(cfg.leagueGridId);
+  if(grid) grid.querySelectorAll('input[type="checkbox"]').forEach(c=>c.checked=true);
+}catch(e){}
+
+// v17 non-destructive data migration.
+  // IMPORTANT: preserve every unknown/new field (edgePower, edgeShin, edgeOOEPC,
+  // fair odds, method metadata, etc.) instead of rebuilding a reduced object.
+  function normalizeBetRecord(b, method){
+    const src = (b && typeof b === 'object') ? b : {};
+    const out = {...src};
+    out.id = src.id || uid();
+    out.date = src.date || '';
+    out.league = src.league || '';
+    out.odds = Number(src.odds) || 0;
+    out.units = Number(src.units) || 0;
+    out.edge = Number.isFinite(Number(src.edge)) ? Number(src.edge) : 0;
+    out.live = !!src.live;
+    out.result = ['win','loss','push','pending'].includes(String(src.result || '').toLowerCase())
+      ? String(src.result).toLowerCase() : 'pending';
+    if(method === 'prop' && !Number.isFinite(optionalNum(src.edgeProp))){
+      out.edgeProp = out.edge; // legacy proportional bets remain fully compatible
+    }
+    // Preserve exact additional-method values if they exist; remove null/blank placeholders
+    // so they never masquerade as a real 0.00% edge after Number(null) coercion.
+    ['edgeProp','edgePower','edgeShin','edgeOOEPC','fairProp','fairPower','fairShin','fairOOEPC','legacyEdgeShin','legacyFairShin'].forEach(k=>{
+      const n = optionalNum(src[k]);
+      if(Number.isFinite(n)) out[k] = n;
+      else if(k in out && !(method === 'prop' && k === 'edgeProp')) delete out[k];
+    });
+    out.schemaVersion = BET_SCHEMA_VERSION;
+    return out;
+  }
+
+  ['prop','power'].forEach(method=>{
+    const before = JSON.stringify(bets[method]);
+    bets[method] = bets[method].map(b => normalizeBetRecord(b, method));
+    const after = JSON.stringify(bets[method]);
+    /* NO AUTO-WRITE ON INITIAL LOAD: normalized records remain in memory until an explicit user save */
+  });
+
+  // ---------------- Filters & UI mapping ----------------
+  const CFG = {
+    prop: {
+      tableBodyId: 'betsTableProp',
+      addBtnId: 'addBetProp',
+      resetBtnId: 'resetFiltersProp',
+      exportBtnId: 'exportCsvProp',
+      clearAllBtnId: 'clearAllProp',
+      allLeaguesId: 'allLeaguesProp',
+      leagueGridId: 'leagueGridProp',
+      typeFilterId: 'betTypeFilterProp',
+      fromDateId: 'fromDateProp',
+      toDateId: 'toDateProp',
+      oddsFromId: 'oddsFromProp',
+      oddsToId: 'oddsToProp',
+      edgeFromId: 'edgeFromProp',
+      edgeToId: 'edgeToProp',
+      inputs: {
+        date: 'betDateProp',
+        league: 'betLeagueProp',
+        odds: 'betOddsProp',
+        units: 'betUnitsProp',
+        edge: 'betEdgeProp',
+        live: 'betLiveProp',
+        result: 'betResultProp'
+      },
+      stats: {
+        total: 'statTotalBetsProp',
+        wins: 'statWinsProp',
+        losses: 'statLossesProp',
+        pending: 'statPendingProp',
+        winRate: 'statWinRateProp',
+        totalUnits: 'statTotalUnitsProp',
+        totalWagered: 'statTotalWageredProp',
+        roi: 'statRoiProp',
+        openExposure: 'statOpenExposureProp',
+        avgEdge: 'statAvgEdgeProp'
+      },
+      modals: {
+        delete: 'deleteModalProp',
+        clearAll: 'clearAllModalProp'
+      }
+    },
+    power: {
+      tableBodyId: 'betsTablePower',
+      addBtnId: 'addBetPower',
+      resetBtnId: 'resetFiltersPower',
+      exportBtnId: 'exportCsvPower',
+      clearAllBtnId: 'clearAllPower',
+      allLeaguesId: 'allLeaguesPower',
+      leagueGridId: 'leagueGridPower',
+      typeFilterId: 'betTypeFilterPower',
+      fromDateId: 'fromDatePower',
+      toDateId: 'toDatePower',
+      oddsFromId: 'oddsFromPower',
+      oddsToId: 'oddsToPower',
+      edgeFromId: 'edgeFromPower',
+      edgeToId: 'edgeToPower',
+      inputs: {
+        date: 'betDatePower',
+        league: 'betLeaguePower',
+        odds: 'betOddsPower',
+        units: 'betUnitsPower',
+        edge: 'betEdgePower',
+        live: 'betLivePower',
+        result: 'betResultPower'
+      },
+      stats: {
+        total: 'statTotalBetsPower',
+        wins: 'statWinsPower',
+        losses: 'statLossesPower',
+        pending: 'statPendingPower',
+        winRate: 'statWinRatePower',
+        totalUnits: 'statTotalUnitsPower',
+        totalWagered: 'statTotalWageredPower',
+        roi: 'statRoiPower',
+        avgEdge: 'statAvgEdgePower'
+      },
+      modals: {
+        delete: 'deleteModalPower',
+        clearAll: 'clearAllModalPower'
+      }
+    }
+  };
+
+  // v17: persist filters and unsaved input drafts so a refresh does not erase working state.
+  function getFilterStorageKey(method){ return method === 'prop' ? STORAGE_KEYS.filtersProp : null; }
+  function captureFilterState(method){
+    const cfg = CFG[method];
+    const grid = el(cfg.leagueGridId);
+    const leagues = grid ? Array.from(grid.querySelectorAll('input[type="checkbox"]')).filter(x=>x.checked).map(x=>x.value) : [];
+    return {
+      type: el(cfg.typeFilterId)?.value || 'all',
+      from: el(cfg.fromDateId)?.value || '',
+      to: el(cfg.toDateId)?.value || '',
+      oddsFrom: el(cfg.oddsFromId)?.value || '',
+      oddsTo: el(cfg.oddsToId)?.value || '',
+      edgeFrom: el(cfg.edgeFromId)?.value || '',
+      edgeTo: el(cfg.edgeToId)?.value || '',
+      allLeagues: !!el(cfg.allLeaguesId)?.checked,
+      leagues
+    };
+  }
+  function saveFilterState(method){
+    const key = getFilterStorageKey(method);
+    if(key) saveObject(key, captureFilterState(method));
+  }
+  function restoreFilterState(method){
+    const key = getFilterStorageKey(method);
+    if(!key) return;
+    const s = loadObject(key);
+    if(!s) return;
+    const cfg = CFG[method];
+    if(el(cfg.typeFilterId) && s.type != null) el(cfg.typeFilterId).value = s.type;
+    if(el(cfg.fromDateId)) el(cfg.fromDateId).value = s.from || '';
+    if(el(cfg.toDateId)) el(cfg.toDateId).value = s.to || '';
+    if(el(cfg.oddsFromId)) el(cfg.oddsFromId).value = s.oddsFrom || '';
+    if(el(cfg.oddsToId)) el(cfg.oddsToId).value = s.oddsTo || '';
+    if(el(cfg.edgeFromId)) el(cfg.edgeFromId).value = s.edgeFrom || '';
+    if(el(cfg.edgeToId)) el(cfg.edgeToId).value = s.edgeTo || '';
+    const all = el(cfg.allLeaguesId);
+    const grid = el(cfg.leagueGridId);
+    if(all && grid){
+      const selected = new Set(Array.isArray(s.leagues) ? s.leagues : []);
+      if(s.allLeagues){
+        all.checked = true;
+        grid.querySelectorAll('input[type="checkbox"]').forEach(c=>c.checked=true);
+      }else{
+        all.checked = false;
+        grid.querySelectorAll('input[type="checkbox"]').forEach(c=>c.checked=selected.has(c.value));
+      }
+    }
+  }
+
+  function captureDraft(ids){
+    const out = {};
+    ids.forEach(id=>{
+      const node = el(id); if(!node) return;
+      out[id] = node.type === 'checkbox' ? !!node.checked : node.value;
+    });
+    return out;
+  }
+  function restoreDraft(key, ids){
+    const s = loadObject(key); if(!s) return;
+    ids.forEach(id=>{
+      const node = el(id); if(!node || !(id in s)) return;
+      if(node.type === 'checkbox') node.checked = !!s[id]; else node.value = s[id];
+    });
+  }
+  function wireDraftPersistence(key, ids){
+    const save = ()=>saveObject(key, captureDraft(ids));
+    ids.forEach(id=>{
+      const node = el(id); if(!node) return;
+      node.addEventListener('input', save); node.addEventListener('change', save);
+    });
+    return save;
+  }
+
+  // Re-run league initialization now that CFG exists, then restore saved filter state.
+  try{ initLeagueGrid('prop'); restoreFilterState('prop'); }catch(e){}
+
+  function getSelectedLeagues(method){
+    const cfg = CFG[method];
+    const all = el(cfg.allLeaguesId);
+    const grid = el(cfg.leagueGridId);
+    if(!grid) return null;
+
+    const boxes = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
+
+    // Ensure each checkbox value matches its label text (important for correct filtering)
+    for(const b of boxes){
+      if(!b.value || b.value === 'on'){
+        const lab = grid.querySelector(`label[for="${b.id}"]`);
+        if(lab) b.value = (lab.textContent || '').trim();
+      }
+    }
+
+    const checked = boxes.filter(b => b.checked);
+
+    // Treat "all checked" as ALL leagues even if the All Leagues toggle is out of sync
+    const allCheckedByBoxes = (boxes.length > 0 && checked.length === boxes.length);
+
+    if((all && all.checked) || allCheckedByBoxes) return null; // null => ALL leagues
+    return checked.map(b => b.value).filter(Boolean);
+  }
+
+  function applyFilters(method, list){
+    const cfg = CFG[method];
+    const type = (el(cfg.typeFilterId)?.value) || 'all';
+
+    const from = parseDateStr(el(cfg.fromDateId)?.value);
+    const to = parseDateStr(el(cfg.toDateId)?.value);
+    const oddsFrom = safeNum(el(cfg.oddsFromId)?.value);
+    const oddsTo = safeNum(el(cfg.oddsToId)?.value);
+    const edgeFrom = safeNum(el(cfg.edgeFromId)?.value);
+    const edgeTo = safeNum(el(cfg.edgeToId)?.value);
+
+    const leagues = getSelectedLeagues(method);
+
+    return list.filter(b=>{
+      if(type === 'live' && !b.live) return false;
+      if(type === 'pregame' && b.live) return false;
+
+      const d = parseDateStr(b.date);
+      if(from !== null && d !== null && d < from) return false;
+      if(to !== null && d !== null && d > to) return false;
+
+      const bo = Number(b.odds);
+      if(oddsFrom !== null && (!Number.isFinite(bo) || bo < oddsFrom)) return false;
+      if(oddsTo !== null && (!Number.isFinite(bo) || bo > oddsTo)) return false;
+
+      if(edgeFrom !== null && Number(b.edge) < edgeFrom) return false;
+      if(edgeTo !== null && Number(b.edge) > edgeTo) return false;
+
+      if(leagues && leagues.length){
+        if(!leagues.includes(b.league)) return false;
+      }
+      return true;
+    });
+  }
+
+  function updateStats(method, filtered){
+    const cfg = CFG[method];
+    const total = filtered.length;
+    const wins = filtered.filter(b=>b.result==='win').length;
+    const losses = filtered.filter(b=>b.result==='loss').length;
+    const pending = filtered.filter(b=>b.result==='pending').length;
+
+    const totalUnits = filtered.reduce((acc,b)=>acc + computePL(Number(b.odds), Number(b.units), b.result), 0);
+    const settled = filtered.filter(b=>['win','loss','push'].includes(b.result));
+    const totalWagered = settled.reduce((acc,b)=>acc + (Number.isFinite(Number(b.units)) ? Number(b.units) : 0), 0);
+    const openExposure = filtered.filter(b=>b.result==='pending')
+      .reduce((acc,b)=>acc + (Number.isFinite(Number(b.units)) ? Number(b.units) : 0), 0);
+    const roi = totalWagered > 0 ? (totalUnits / totalWagered) * 100 : 0;
+
+    const winDen = (wins + losses);
+    const winRate = winDen > 0 ? (wins / winDen) * 100 : 0;
+    // Proportional falls back to legacy `edge` so all historical bets remain compatible.
+    const edgeValues = (key, fallbackLegacy=false) => filtered
+      .map(b => {
+        const direct = optionalNum(b[key]);
+        if(Number.isFinite(direct)) return direct;
+        if(fallbackLegacy){
+          const legacy = optionalNum(b.edge);
+          return Number.isFinite(legacy) ? legacy : NaN;
+        }
+        return NaN;
+      })
+      .filter(Number.isFinite);
+    const meanOrNull = vals => vals.length ? vals.reduce((a,v)=>a+v,0) / vals.length : null;
+    const avgEdge = meanOrNull(edgeValues('edgeProp', true));
+    const avgPower = meanOrNull(edgeValues('edgePower'));
+    const avgShin = meanOrNull(filtered
+      .filter(b=>String(b.shinMethod||'') === 'analytical' && String(b.shinStatus||'') !== 'unstable')
+      .map(b=>optionalNum(b.edgeShin))
+      .filter(Number.isFinite));
+    const avgOOEPC = meanOrNull(edgeValues('edgeOOEPC'));
+const set = (id, val) => { const node = el(id); if(node) node.textContent = val; };
+
+    set(cfg.stats.total, String(total));
+    set(cfg.stats.wins, String(wins));
+    set(cfg.stats.losses, String(losses));
+    set(cfg.stats.pending, String(pending));
+    set(cfg.stats.winRate, formatNum(winRate, 1) + '%');
+    set(cfg.stats.totalUnits, formatNum(totalUnits, 2));
+    set(cfg.stats.totalWagered, formatNum(totalWagered, 2));
+    set(cfg.stats.roi, formatNum(roi, 2) + '%');
+    if(cfg.stats.openExposure) set(cfg.stats.openExposure, formatNum(openExposure, 2));
+    set(cfg.stats.avgEdge, avgEdge===null ? '-' : (formatNum(avgEdge, 2) + '%'));
+    if(method === 'prop'){
+      set('statAvgEdgePower', avgPower===null ? '-' : (formatNum(avgPower, 2) + '%'));
+      set('statAvgEdgeShin', avgShin===null ? '-' : (formatNum(avgShin, 2) + '%'));
+      set('statAvgEdgeOOEPC', avgOOEPC===null ? '-' : (formatNum(avgOOEPC, 2) + '%'));
+    }
+  }
+
+  function render(method){
+    const cfg = CFG[method];
+    const tbody = el(cfg.tableBodyId);
+    if(!tbody) return;
+
+    const list = [...bets[method]];
+    // Sort newest first (by date)
+    list.sort((a,b)=>{
+      const da = parseDateStr(a.date) ?? 0;
+      const db = parseDateStr(b.date) ?? 0;
+      return db - da;
+    });
+
+    const filtered = applyFilters(method, list);
+    updateStats(method, filtered);
+
+    tbody.innerHTML = '';
+
+    if(filtered.length === 0){
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 8;
+      td.style.textAlign = 'center';
+      td.style.padding = '30px';
+      td.style.color = '#7a8fa6';
+      td.textContent = 'No bets match your filters 📭';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    for(const b of filtered){
+      const tr = document.createElement('tr');
+
+      const tdDate = document.createElement('td');
+      tdDate.textContent = b.date || '';
+      tr.appendChild(tdDate);
+
+      const tdLeague = document.createElement('td');
+      tdLeague.textContent = b.league || '';
+      tr.appendChild(tdLeague);
+
+      const tdOdds = document.createElement('td');
+      tdOdds.textContent = formatNum(Number(b.odds), 2);
+      tr.appendChild(tdOdds);
+
+      const tdUnits = document.createElement('td');
+      tdUnits.textContent = formatNum(Number(b.units), 2);
+      tr.appendChild(tdUnits);
+
+      const tdEdge = document.createElement('td');
+      tdEdge.style.minWidth = '145px';
+      tdEdge.style.lineHeight = '1.55';
+      const propDirect = optionalNum(b.edgeProp);
+      const prop = Number.isFinite(propDirect) ? propDirect : optionalNum(b.edge);
+      const power = optionalNum(b.edgePower);
+      const shin = optionalNum(b.edgeShin);
+      const ooepc = optionalNum(b.edgeOOEPC);
+      const edgeLine = (label, value, color) => {
+        const v = Number.isFinite(value) ? `${value >= 0 ? '+' : ''}${formatNum(value,2)}%` : '—';
+        return `<div style="white-space:nowrap"><span style="color:${color};font-weight:700">${label}</span> ${v}</div>`;
+      };
+      tdEdge.innerHTML = [
+        edgeLine('Prop', prop, '#00ff88'),
+        edgeLine('Power', power, '#ffc107'),
+        edgeLine(
+          String(b.shinMethod||'').startsWith('numerical') ? 'Shin N*' :
+          (b.shinMethod === 'unknown-legacy' ? 'Shin ?*' :
+          (b.shinStatus === 'legacy-unverified' || b.shinMethod === 'analytical-legacy-unverified' ? 'Shin ?' :
+          ((b.shinStatus === 'unstable' || b.shinMethod === 'analytical-unstable') ? 'Shin N/A' :
+          (Number.isFinite(shin) && b.shinMethod === 'analytical' ? 'Shin A' : 'Shin')))),
+          shin, '#00d4ff'
+        ),
+        edgeLine('OO-EPC', ooepc, '#d77bff')
+      ].join('');
+      tr.appendChild(tdEdge);
+
+      const pl = computePL(Number(b.odds), Number(b.units), b.result);
+      const tdPL = document.createElement('td');
+      tdPL.textContent = formatNum(pl, 2);
+      tdPL.style.color = pl > 0 ? '#00ff88' : (pl < 0 ? '#ff3366' : '#7a8fa6');
+      tr.appendChild(tdPL);
+
+      const tdRes = document.createElement('td');
+      tdRes.textContent = (b.result || 'pending').toUpperCase();
+      tr.appendChild(tdRes);
+
+      const tdAct = document.createElement('td');
+      tdAct.className = 'action-buttons';
+
+      const btnEdit = document.createElement('button');
+      btnEdit.className = 'action-btn edit-btn';
+      btnEdit.textContent = '✏️';
+      btnEdit.title = 'Edit';
+      btnEdit.dataset.action = 'edit';
+      btnEdit.dataset.id = b.id;
+      btnEdit.dataset.method = method;
+
+      const btnDel = document.createElement('button');
+      btnDel.className = 'action-btn delete-btn';
+      btnDel.textContent = '🗑';
+      btnDel.title = 'Delete';
+      btnDel.dataset.action = 'delete';
+      btnDel.dataset.id = b.id;
+      btnDel.dataset.method = method;
+
+      tdAct.appendChild(btnEdit);
+      tdAct.appendChild(btnDel);
+      tr.appendChild(tdAct);
+
+      tbody.appendChild(tr);
+    }
+  }
+
+  function readInputs(method){
+    const cfg = CFG[method];
+    const inp = cfg.inputs;
+
+    // Defaults to avoid "dead buttons" in browsers that block alert()
+    let date = el(inp.date)?.value || '';
+    if(!date){
+      const t = new Date();
+      const yyyy = t.getFullYear();
+      const mm = String(t.getMonth()+1).padStart(2,'0');
+      const dd = String(t.getDate()).padStart(2,'0');
+      date = `${yyyy}-${mm}-${dd}`;
+    }
+
+    let league = el(inp.league)?.value || '';
+    if(!league) league = 'Unknown';
+
+    const odds = normalizeOdds(el(inp.odds)?.value);
+    const units = safeNum(el(inp.units)?.value) ?? 10;
+    const edge = safeNum(el(inp.edge)?.value) ?? 0;
+    const live = !!el(inp.live)?.checked;
+    const result = el(inp.result)?.value || 'pending';
+
+    const errors = [];
+    if(odds === null) errors.push('Odds');
+    if(!(Number.isFinite(units) && units > 0)) errors.push('Units');
+
+    return {date, league, odds, units, edge, live, result, errors};
+  }
+
+  function clearInputs(method){
+    const cfg = CFG[method];
+    const inp = cfg.inputs;
+    if(el(inp.date)) el(inp.date).value = '';
+    // keep league selection
+    if(el(inp.odds)) el(inp.odds).value = '';
+    if(el(inp.units)) el(inp.units).value = '10';
+    if(el(inp.edge)) el(inp.edge).value = '';
+    if(el(inp.live)) el(inp.live).checked = false;
+    if(el(inp.result)) el(inp.result).value = 'pending';
+  }
+
+  function setEditing(method, bet){
+    const cfg = CFG[method];
+    const inp = cfg.inputs;
+    if(el(inp.date)) el(inp.date).value = bet.date || '';
+    if(el(inp.league)) el(inp.league).value = bet.league || '';
+    if(el(inp.odds)) el(inp.odds).value = bet.odds;
+    if(el(inp.units)) el(inp.units).value = bet.units;
+    if(el(inp.edge)) el(inp.edge).value = bet.edge;
+    if(el(inp.live)) el(inp.live).checked = !!bet.live;
+    if(el(inp.result)) el(inp.result).value = bet.result || 'pending';
+
+    const addBtn = el(cfg.addBtnId);
+    if(addBtn){
+      addBtn.dataset.editingId = bet.id;
+      addBtn.textContent = (method === 'prop') ? 'Save Proportional Bet' : 'Save Power Bet';
+    }
+  }
+
+  function clearEditing(method){
+    const cfg = CFG[method];
+    const addBtn = el(cfg.addBtnId);
+    if(addBtn){
+      delete addBtn.dataset.editingId;
+      addBtn.textContent = (method === 'prop') ? 'Add Proportional Bet' : 'Add Power Bet';
+    }
+  }
+
+  // ---------------- Modals ----------------
+  const overlay = el('modalOverlay');
+
+  function showModal(modalId){
+    const modal = el(modalId);
+    if(!modal || !overlay) return;
+    overlay.style.display = 'block';
+    overlay.classList.add('show');
+    modal.style.display = 'block';
+  }
+  function hideModal(modalId){
+    const modal = el(modalId);
+    if(!modal || !overlay) return;
+    modal.style.display = 'none';
+    const anyVisible = Array.from(document.querySelectorAll('.modal')).some(m => m.style.display === 'block');
+    if(!anyVisible){
+      overlay.classList.remove('show');
+      overlay.style.display = 'none';
+    }
+  }
+  function hideAllModals(){
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    if(overlay){
+      overlay.classList.remove('show');
+      overlay.style.display = 'none';
+    }
+  }
+  if(overlay){
+    overlay.addEventListener('click', hideAllModals);
+  }
+
+  function wireModalCancel(modalId){
+    const modal = el(modalId);
+    if(!modal) return;
+    const cancel = modal.querySelector('.btn-cancel');
+    if(cancel) cancel.addEventListener('click', ()=> hideModal(modalId));
+  }
+
+  // ---------------- Delete / Clear All handling ----------------
+  let pendingDelete = {method:null, id:null};
+
+  function wireDeleteModal(method){
+    const modalId = CFG[method].modals.delete;
+    wireModalCancel(modalId);
+    const modal = el(modalId);
+    if(!modal) return;
+
+    const btnConfirm = modal.querySelector('.btn-confirm');
+    if(!btnConfirm) return;
+
+    // Prevent double-binding if script re-runs
+    if(btnConfirm.dataset.wired === '1') return;
+    btnConfirm.dataset.wired = '1';
+
+    btnConfirm.addEventListener('click', ()=>{
+      const { method: mth, id } = pendingDelete || {};
+      if(!mth || !id){
+        hideModal(modalId);
+        return;
+      }
+
+      // Delete by id (stable even when table is filtered/sorted)
+      const idx = bets[mth].findIndex(b => b.id === id);
+      if(idx >= 0){
+        bets[mth].splice(idx, 1);
+        saveArray(STORAGE_KEYS[mth], bets[mth]);
+      }
+
+      pendingDelete = {method:null, id:null};
+      hideModal(modalId);
+      clearEditing(mth);
+      render(mth);
+    });
+  }
+
+  function wireClearAllModal(method){
+    const modalId = CFG[method].modals.clearAll;
+    wireModalCancel(modalId);
+    const modal = el(modalId);
+    if(!modal) return;
+    const confirm = modal.querySelector('.btn-confirm');
+    if(confirm){
+      confirm.addEventListener('click', ()=>{
+        bets[method] = [];
+        saveArray(STORAGE_KEYS[method], bets[method]);
+        hideModal(modalId);
+        clearEditing(method);
+        render(method);
+      });
+    }
+  }
+
+  // ---------------- Buttons: Add / Reset / Export / Clear ----------------
+  function wireMethod(method){
+    const cfg = CFG[method];
+
+    // Add / Save
+    const addBtn = el(cfg.addBtnId);
+    if(addBtn){
+      addBtn.addEventListener('click', ()=>{
+        const data = readInputs(method);
+        if(data.errors.length){
+          alert('Please fill: ' + data.errors.join(', '));
+          return;
+        }
+        const {errors, ...cleanData} = data;
+        const editingId = addBtn.dataset.editingId;
+        if(editingId){
+          const idx = bets[method].findIndex(b=>b.id===editingId);
+          if(idx >= 0){
+            const oldBet = bets[method][idx];
+            const merged = {...oldBet, ...cleanData, schemaVersion: BET_SCHEMA_VERSION};
+            // Recalculate every AVAILABLE calculator method when odds are edited.
+            if(method === 'prop' && [oldBet.fairProp,oldBet.fairPower,oldBet.fairOOEPC].every(v=>Number.isFinite(optionalNum(v)))){
+              merged.edgeProp = ((cleanData.odds / Number(oldBet.fairProp)) - 1) * 100;
+              merged.edgePower = ((cleanData.odds / Number(oldBet.fairPower)) - 1) * 100;
+              merged.edgeOOEPC = ((cleanData.odds / Number(oldBet.fairOOEPC)) - 1) * 100;
+              if(Number.isFinite(optionalNum(oldBet.fairShin)) &&
+                 oldBet.shinStatus !== 'unstable' && oldBet.shinMethod !== 'analytical-unstable'){
+                merged.edgeShin = ((cleanData.odds / Number(oldBet.fairShin)) - 1) * 100;
+              }else{
+                delete merged.edgeShin;
+              }
+              merged.edge = merged.edgeProp;
+            }else if(method === 'prop'){
+              merged.edgeProp = cleanData.edge;
+            }
+            bets[method][idx] = merged;
+          }
+          clearEditing(method);
+        }else{
+          const rec = {id: uid(), ...cleanData, schemaVersion: BET_SCHEMA_VERSION};
+          if(method === 'prop'){
+            rec.edgeProp = cleanData.edge;
+            rec.edgeSource = 'manual';
+          }
+          bets[method].push(rec);
+        }
+        saveArray(STORAGE_KEYS[method], bets[method]);
+        clearInputs(method);
+        if(method === 'prop') saveObject(STORAGE_KEYS.draftProp, captureDraft(['betDateProp','betLeagueProp','betOddsProp','betUnitsProp','betEdgeProp','betResultProp','betLiveProp']));
+        render(method);
+      });
+    }
+
+    // Reset Filters
+    const resetBtn = el(cfg.resetBtnId);
+    if(resetBtn){
+      resetBtn.addEventListener('click', ()=>{
+        if(el(cfg.typeFilterId)) el(cfg.typeFilterId).value = 'all';
+        if(el(cfg.fromDateId)) el(cfg.fromDateId).value = '';
+        if(el(cfg.toDateId)) el(cfg.toDateId).value = '';
+        if(el(cfg.oddsFromId)) el(cfg.oddsFromId).value = '';
+        if(el(cfg.oddsToId)) el(cfg.oddsToId).value = '';
+        if(el(cfg.edgeFromId)) el(cfg.edgeFromId).value = '';
+        if(el(cfg.edgeToId)) el(cfg.edgeToId).value = '';
+
+        const all = el(cfg.allLeaguesId);
+        if(all) all.checked = true;
+
+        const grid = el(cfg.leagueGridId);
+        if(grid){
+          grid.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+        }
+        saveFilterState(method);
+        render(method);
+      });
+    }
+
+    // Export CSV
+    const exportBtn = el(cfg.exportBtnId);
+    if(exportBtn){
+      exportBtn.addEventListener('click', ()=>{
+        const rows = bets[method].slice().sort((a,b)=>(parseDateStr(b.date)||0)-(parseDateStr(a.date)||0));
+        const header = method === 'prop'
+          ? ['Date','League','Odds','Units','Edge%','Edge_Prop%','Edge_Power%','Edge_Shin%','Shin_Method','Shin_Status','Shin_Reason','Legacy_Edge_Shin','Edge_OOEPC%','Fair_Prop','Fair_Power','Fair_Shin','Legacy_Fair_Shin','Fair_OOEPC','MarketType','Result','P/L','SchemaVersion']
+          : ['Date','League','Odds','Units','Edge%','MarketType','Result','P/L'];
+        const lines = [header.join(',')];
+        for(const b of rows){
+          const pl = computePL(Number(b.odds), Number(b.units), b.result);
+          const baseCells = [
+            csvEscape(b.date),
+            csvEscape(b.league),
+            csvEscape(formatNum(Number(b.odds),2)),
+            csvEscape(formatNum(Number(b.units),2)),
+            csvEscape(formatNum(Number(b.edge),2))
+          ];
+          if(method === 'prop'){
+            baseCells.push(
+              csvEscape(Number.isFinite(optionalNum(b.edgeProp)) ? formatNum(optionalNum(b.edgeProp),2) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.edgePower)) ? formatNum(optionalNum(b.edgePower),2) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.edgeShin)) ? formatNum(optionalNum(b.edgeShin),2) : ''),
+              csvEscape(b.shinMethod || ''),
+              csvEscape(b.shinStatus || ''),
+              csvEscape(b.shinReason || ''),
+              csvEscape(Number.isFinite(optionalNum(b.legacyEdgeShin)) ? formatNum(optionalNum(b.legacyEdgeShin),2) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.edgeOOEPC)) ? formatNum(optionalNum(b.edgeOOEPC),2) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.fairProp)) ? formatNum(optionalNum(b.fairProp),4) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.fairPower)) ? formatNum(optionalNum(b.fairPower),4) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.fairShin)) ? formatNum(optionalNum(b.fairShin),4) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.legacyFairShin)) ? formatNum(optionalNum(b.legacyFairShin),4) : ''),
+              csvEscape(Number.isFinite(optionalNum(b.fairOOEPC)) ? formatNum(optionalNum(b.fairOOEPC),4) : '')
+            );
+          }
+          baseCells.push(
+            csvEscape(b.live ? 'Other pregame market' : '1X2 pregame'),
+            csvEscape(b.result),
+            csvEscape(formatNum(pl,2))
+          );
+          if(method === 'prop') baseCells.push(csvEscape(b.schemaVersion || ''));
+          lines.push(baseCells.join(','));
+        }
+        const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = (method === 'prop' ? 'proportional_bets.csv' : 'power_bets.csv');
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+      });
+    }
+
+    // Clear All
+    const clearBtn = el(cfg.clearAllBtnId);
+    if(clearBtn){
+      clearBtn.addEventListener('click', ()=> showModal(cfg.modals.clearAll));
+    }
+
+    // League all toggle
+    const all = el(cfg.allLeaguesId);
+    const grid = el(cfg.leagueGridId);
+
+    if(all && grid){
+      all.addEventListener('change', ()=>{
+        const checked = all.checked;
+        grid.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = checked);
+        saveFilterState(method);
+        render(method);
+      });
+      grid.addEventListener('change', ()=>{
+        const boxes = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
+        const allChecked = boxes.every(c=>c.checked);
+        all.checked = allChecked;
+        saveFilterState(method);
+        render(method);
+      });
+    }
+
+    // Filters change
+    [cfg.typeFilterId,cfg.fromDateId,cfg.toDateId,cfg.oddsFromId,cfg.oddsToId,cfg.edgeFromId,cfg.edgeToId].forEach(fid=>{
+      const node = el(fid);
+      if(node) node.addEventListener('input', ()=>{ saveFilterState(method); render(method); });
+      if(node) node.addEventListener('change', ()=>{ saveFilterState(method); render(method); });
+    });
+
+    // Table actions (delegation)
+    const tbody = el(cfg.tableBodyId);
+    if(tbody){
+      tbody.addEventListener('click', (e)=>{
+        const btn = e.target.closest('button');
+        if(!btn) return;
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+        if(!action || !id) return;
+
+        const bet = bets[method].find(b=>b.id===id);
+        if(!bet) return;
+
+        if(action === 'edit'){
+          setEditing(method, bet);
+          // Switch to correct tab automatically
+          if(method==='prop' && btnProp) activateTab('proportionalTab', btnProp);
+          if(method==='power' && btnPower) activateTab('powerTab', btnPower);
+        }else if(action === 'delete'){
+          pendingDelete = {method, id};
+          showModal(cfg.modals.delete);
+        }
+      });
+    }
+
+    // If user edits inputs manually, allow cancel edit by hitting Escape
+    document.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Escape'){
+        hideAllModals();
+        clearEditing(method);
+      }
+    });
+  }
+
+  // Wire modals and methods
+  wireDeleteModal('prop');
+  wireDeleteModal('power');
+  wireClearAllModal('prop');
+  wireClearAllModal('power');
+  wireMethod('prop');
+  wireMethod('power');
+
+  // Restore + persist unsaved main-tracker draft.
+  const __propDraftIds = ['betDateProp','betLeagueProp','betOddsProp','betUnitsProp','betEdgeProp','betResultProp','betLiveProp'];
+  restoreDraft(STORAGE_KEYS.draftProp, __propDraftIds);
+  wireDraftPersistence(STORAGE_KEYS.draftProp, __propDraftIds);
+
+  // ---------------- Import POWER ----------------
+  const importBtnPower = el('importPower');
+  const importTextPower = el('importTextPower');
+  const importReplacePower = el('importReplacePower');
+  const importDoPower = el('doImportPower');
+  const importClosePower = el('closeImportPower');
+
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  function normalizeDateAny(v){
+    if(v === null || v === undefined) return '';
+    const s = String(v).trim();
+    if(!s) return '';
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+
+    const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+    if(m){
+      const mm = Number(m[1]), dd = Number(m[2]);
+      let yy = Number(m[3]);
+      if(yy < 100) yy = 2000 + yy;
+      if(mm>=1 && mm<=12 && dd>=1 && dd<=31) return `${yy}-${pad2(mm)}-${pad2(dd)}`;
+    }
+
+    const d = new Date(s);
+    if(!Number.isNaN(d.getTime())){
+      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+    }
+    return s;
+  }
+
+  function toDecimalOdds(v){
+    if(v === null || v === undefined) return null;
+    const s = String(v).trim();
+    if(!s) return null;
+    const n = Number(s);
+    if(!Number.isFinite(n)) return null;
+
+    // American odds support
+    const looksAmerican = (s.startsWith('+') || s.startsWith('-')) && Math.abs(n) >= 100;
+    const maybeAmericanNoSign = !s.includes('.') && Math.abs(n) >= 100 && Math.abs(n) <= 1000;
+
+    if(looksAmerican || maybeAmericanNoSign){
+      if(n > 0) return 1 + (n/100);
+      return 1 + (100/Math.abs(n));
+    }
+    return n;
+  }
+
+  function toNumberLoose(v){
+    if(v === null || v === undefined) return null;
+    const s = String(v).trim().replace('%','');
+    if(!s) return null;
+    const n = Number(s);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function normalizeResult(v){
+    const s = (v ?? '').toString().trim().toLowerCase();
+    if(!s) return 'pending';
+    if(['w','win','won','✅','green','hit','winner'].includes(s)) return 'win';
+    if(['l','loss','lost','❌','red','miss','loser'].includes(s)) return 'loss';
+    if(['p','push','void','refund','tie','draw'].includes(s)) return 'push';
+    if(['pending','open','live','running','-'].includes(s)) return 'pending';
+    // try partial matches
+    if(s.includes('win')) return 'win';
+    if(s.includes('loss')) return 'loss';
+    if(s.includes('push') || s.includes('void') || s.includes('refund')) return 'push';
+    return 'pending';
+  }
+
+  function normalizeBool(v){
+    const s = (v ?? '').toString().trim().toLowerCase();
+    if(!s) return false;
+    return ['1','true','yes','y','on','live'].includes(s);
+  }
+
+  function computePL(odds, units, result){
+    if(!(Number.isFinite(odds) && odds > 1 && Number.isFinite(units) && units > 0)) return 0;
+    if(result === 'win') return units * (odds - 1);
+    if(result === 'loss') return -units;
+    if(result === 'push') return 0;
+    return 0;
+  }
+
+  function splitCsvLine(line, delim){
+    // Quote-aware only for comma
+    if(delim !== ',') return line.split(delim).map(s=>s.trim());
+    const out = [];
+    let cur = '';
+    let inQ = false;
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(ch === '"'){
+        if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+        else { inQ = !inQ; }
+        continue;
+      }
+      if(ch === delim && !inQ){
+        out.push(cur.trim());
+        cur = '';
+        continue;
+      }
+      cur += ch;
+    }
+    out.push(cur.trim());
+    return out;
+  }
+
+  function detectDelim(line){
+    const c = (line.match(/,/g) || []).length;
+    const t = (line.match(/\t/g) || []).length;
+    const s = (line.match(/;/g) || []).length;
+    if(t >= c && t >= s && t > 0) return '\t';
+    if(s >= c && s > 0) return ';';
+    return ',';
+  }
+
+  function parseImportPower(text){
+    const raw = (text || '').trim();
+    if(!raw) return [];
+
+    // JSON
+    if(raw.startsWith('[') || raw.startsWith('{')){
+      try{
+        const parsed = JSON.parse(raw);
+        const arr = Array.isArray(parsed) ? parsed
+          : Array.isArray(parsed.power) ? parsed.power
+          : Array.isArray(parsed.bets) ? parsed.bets
+          : [];
+        return arr.map(obj => normalizeImportedBet(obj)).filter(Boolean);
+      }catch(e){
+        // fall through to CSV
+      }
+    }
+
+    // CSV / TSV / ; separated
+    const lines = raw.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith('#'));
+    if(lines.length === 0) return [];
+    const delim = detectDelim(lines[0]);
+    const header = splitCsvLine(lines[0], delim).map(h=>h.toLowerCase().trim());
+    const hasHeader = header.some(h => ['date','league','odds','units','edge','result','live','status'].includes(h));
+    let startIdx = 0;
+    let keys = header;
+    if(!hasHeader){
+      // Assume fixed order: date, league, odds, units, edge, result, live
+      keys = ['date','league','odds','units','edge','result','live'];
+      startIdx = 0;
+    }else{
+      startIdx = 1;
+    }
+
+    const out = [];
+    for(let i=startIdx;i<lines.length;i++){
+      const cols = splitCsvLine(lines[i], delim);
+      if(cols.length === 0) continue;
+      const obj = {};
+      for(let j=0;j<keys.length && j<cols.length;j++){
+        obj[keys[j]] = cols[j];
+      }
+      const bet = normalizeImportedBet(obj);
+      if(bet) out.push(bet);
+    }
+    return out;
+  }
+
+  function normalizeImportedBet(obj){
+    if(!obj || typeof obj !== 'object') return null;
+
+    const date = normalizeDateAny(obj.date ?? obj.betdate ?? obj.bet_date ?? obj.day ?? obj['bet date']);
+    const league = (obj.league ?? obj.competition ?? obj.tournament ?? obj.sport ?? obj['leagues'] ?? '').toString().trim() || 'Unknown';
+    const odds = toDecimalOdds(obj.odds ?? obj.price ?? obj['book odds'] ?? obj.bookodds ?? obj.book_odds);
+    const units = toNumberLoose(obj.units ?? obj.stake ?? obj['stake units'] ?? obj.wager ?? obj.size);
+    const edge = toNumberLoose(obj.edge ?? obj.edgepct ?? obj.edge_percent ?? obj['edge %'] ?? obj['edge']);
+    const result = normalizeResult(obj.result ?? obj.status ?? obj.outcome);
+    const live = normalizeBool(obj.live ?? obj.islive ?? obj.inplay);
+
+    if(!date) return null;
+    if(!(Number.isFinite(odds) && odds > 1)) return null;
+    if(!(Number.isFinite(units) && units > 0)) return null;
+
+    const pl = computePL(odds, units, result);
+
+    return {
+      id: uid(),
+      date,
+      league,
+      odds,
+      units,
+      edge: Number.isFinite(edge) ? edge : 0,
+      live,
+      result,
+      pl
+    };
+  }
+
+  if(importBtnPower && importDoPower && importClosePower){
+    importBtnPower.addEventListener('click', ()=>{
+      if(importTextPower) importTextPower.value = '';
+      if(importReplacePower) importReplacePower.checked = true;
+      showModal('importModalPower');
+      setTimeout(()=>importTextPower && importTextPower.focus(), 50);
+    });
+
+    importClosePower.addEventListener('click', ()=> hideModal('importModalPower'));
+
+    importDoPower.addEventListener('click', ()=>{
+      const parsed = parseImportPower(importTextPower ? importTextPower.value : '');
+      if(parsed.length === 0){
+        alert('No valid POWER bets found. Tip: include date, league, odds, units.');
+        return;
+      }
+      const replace = !!importReplacePower?.checked;
+      bets.power = replace ? parsed : [...parsed, ...bets.power];
+      saveArray(STORAGE_KEYS.power, bets.power);
+      hideModal('importModalPower');
+      render('power');
+      alert(`Imported ${parsed.length} POWER bet(s).`);
+    });
+  }
+
+  // ---------------- Calculator ----------------
+  let history = loadArray(STORAGE_KEYS.history);
+
+  function normalizeOdds(x){
+    const n = toDecimalOdds(x);
+    if(n === null) return null;
+    if(!Number.isFinite(n) || n < 1.01 || n > 100000) return null;
+    return n;
+  }
+
+  function validatePinnacleMarket(pinn){
+    if(!Array.isArray(pinn) || pinn.length < 2 || pinn.some(o=>!Number.isFinite(o) || o <= 1)){
+      return {ok:false, message:'Invalid Pinnacle odds.'};
+    }
+    const q = pinn.map(o=>1/o);
+    const overround = q.reduce((a,b)=>a+b,0);
+    if(!(overround > 1.0)){
+      return {ok:false, message:`Pinnacle overround is ${(overround*100).toFixed(2)}%. No positive vig is detected; check the closing odds/input.`};
+    }
+    if(overround > 1.25){
+      return {ok:false, message:`Pinnacle overround is ${(overround*100).toFixed(2)}%, which is implausibly high for this workflow. Check for a typo or mismatched market.`};
+    }
+    return {ok:true, overround};
+  }
+
+  function calcFairOdds(pinn){
+    // Multi-method de-vig for one-winner markets (2-way / 1X2).
+    // Methods: Proportional (multiplicative), Power, analytical Shin, and OO-EPC.
+    const q = pinn.map(o => 1/o); // bookmaker implied probabilities
+    const overround = q.reduce((a,b)=>a+b,0);
+    const target = 1.0; // exactly one successful outcome
+
+    // 1) Proportional / multiplicative
+    const pProp = q.map(x => x / overround);
+    const fairProp = pProp.map(p => 1/p);
+
+    // 2) Power: solve sum(q_i^a)=1 with an adaptive bracket.
+    // This remains stable even for extreme but valid decimal odds.
+    function sumPow(a){ return q.reduce((acc,x)=>acc + Math.pow(x,a), 0); }
+    let loA = 1e-8, hiA = 1.0;
+    while(sumPow(hiA) > target && hiA < 4096) hiA *= 2;
+    let powerValid = sumPow(loA) >= target && sumPow(hiA) <= target;
+    let a = 1.0;
+    let pPow;
+    if(powerValid){
+      for(let iter=0; iter<160; iter++){
+        const mid = (loA + hiA) / 2;
+        if(sumPow(mid) > target) loA = mid; else hiA = mid;
+      }
+      a = (loA + hiA) / 2;
+      pPow = q.map(x => Math.pow(x, a));
+      const sm = pPow.reduce((acc,x)=>acc+x,0);
+      if(!(sm > 0) || pPow.some(x=>!Number.isFinite(x) || x<=0)){
+        powerValid = false;
+        pPow = pProp.slice();
+      }else{
+        pPow = pPow.map(x=>x/sm);
+      }
+    }else{
+      pPow = pProp.slice();
+    }
+    const fairPow = pPow.map(p => 1/p);
+
+    // 3) Shin — analytical variant (Algorithm 3).
+    // z_i is a proportion of insider bettors, so 0 <= z_i < 1 is required.
+    // Near c_i^2 = 1 the analytical expression is singular. In that region
+    // Shin is explicitly unavailable instead of silently becoming Proportional.
+    const cShin = q.map(x => x - (overround - x));
+    const zShin = [];
+    let shinReason = '';
+    let pShinRaw = [];
+    let shinValid = true;
+
+    for(let i=0; i<q.length; i++){
+      const x = q[i];
+      const c = cShin[i];
+      const cDenom = c*c - 1;
+      const denomZ = overround * cDenom;
+
+      if(!Number.isFinite(denomZ) || Math.abs(cDenom) < 1e-8){
+        shinValid = false;
+        shinReason = 'analytical singularity (c²≈1)';
+        break;
+      }
+
+      const z = ((overround - 1) * (c*c - overround)) / denomZ;
+      zShin.push(z);
+      if(!Number.isFinite(z) || z < 0 || z >= 1){
+        shinValid = false;
+        shinReason = 'invalid insider proportion z';
+        break;
+      }
+
+      const denomP = 2 * (1 - z);
+      const inside = z*z + 4*(1-z)*(x*x/overround);
+      if(!Number.isFinite(inside) || inside < -1e-12 || Math.abs(denomP) < 1e-12){
+        shinValid = false;
+        shinReason = 'invalid analytical probability';
+        break;
+      }
+
+      const p = (Math.sqrt(Math.max(0, inside)) - z) / denomP;
+      if(!Number.isFinite(p) || p <= 0){
+        shinValid = false;
+        shinReason = 'non-positive analytical probability';
+        break;
+      }
+      pShinRaw.push(p);
+    }
+
+    let pShin;
+    let fairShin;
+    if(shinValid){
+      const shinSum = pShinRaw.reduce((a,b)=>a+b,0);
+      if(!(shinSum > 0) || !Number.isFinite(shinSum)){
+        shinValid = false;
+        shinReason = 'invalid analytical normaliser';
+      }else{
+        pShin = pShinRaw.map(x => x/shinSum);
+        fairShin = pShin.map(p => 1/p);
+      }
+    }
+    if(!shinValid){
+      pShin = Array(q.length).fill(NaN);
+      fairShin = Array(q.length).fill(NaN);
+    }
+
+    // 4) OO-EPC (Goto, Takeishi & Yairi, 2026, Algorithm 5).
+    // sigma_i = sqrt(q_i(1-q_i)/q_i) = sqrt(1-q_i)
+    // z = (sum(q)-1)/sum(sigma); p_i = q_i - z*sigma_i.
+    // Paper specifies multiplicative fallback if any probability would be non-positive.
+    const sigma = q.map(x => Math.sqrt(Math.max(0, 1-x)));
+    const sigmaSum = sigma.reduce((a,b)=>a+b,0);
+    const zEpc = sigmaSum > 0 ? (overround-target)/sigmaSum : 0;
+    let pOO = q.map((x,i)=>x - zEpc*sigma[i]);
+    const ooValid = (overround > target) &&
+      pOO.every((x,i)=> Number.isFinite(x) && x > 0 && zEpc < (q[i]/Math.max(sigma[i],1e-15)));
+    if(!ooValid){
+      pOO = pProp.slice();
+    } else {
+      const sm = pOO.reduce((a,b)=>a+b,0);
+      pOO = pOO.map(x => x/sm); // numerical guard; analytically sums to 1
+    }
+    const fairOO = pOO.map(p => 1/p);
+
+    return {
+      overround,
+      proportional: { probs: pProp, fair: fairProp },
+      power: { a, probs: pPow, fair: fairPow, fallback: !powerValid },
+      shin: { z: zShin, probs: pShin, fair: fairShin, valid: shinValid, status: shinValid ? 'ok' : 'unstable', reason: shinReason },
+      ooepc: { z: zEpc, probs: pOO, fair: fairOO, fallback: !ooValid }
+    };
+  }
+
+  // v19 history migration:
+  // Preserve genuine Numerical/unknown legacy Shin. Revalidate Analytical Shin
+  // from the saved Pinnacle odds so unstable old analytical values are not kept.
+  (function migrateHistoryMethods(){
+    let changed = false;
+    for(const item of history){
+      if(!item || !Array.isArray(item.outcomes) || !item.outcomes.length) continue;
+      const oldMeta = item.methodMeta && typeof item.methodMeta === 'object' ? item.methodMeta : {};
+      const pinn = item.outcomes.map(o=>normalizeOdds(o?.pinn));
+      if(pinn.some(v=>v===null)) continue;
+
+      const f = calcFairOdds(pinn);
+      const priorMethod = String(oldMeta.shinMethod || '');
+      const hadAnyShin = item.outcomes.some(o=>Number.isFinite(optionalNum(o.fairShin)) || Number.isFinite(optionalNum(o.edgeShin)));
+      let preserveLegacyShin = priorMethod.startsWith('numerical') || priorMethod === 'unknown-legacy';
+      if(!priorMethod && oldMeta.shinZ !== null && oldMeta.shinZ !== undefined &&
+         oldMeta.shinZ !== '' && Number.isFinite(Number(oldMeta.shinZ))){
+        preserveLegacyShin = true;
+      }
+
+      let shinMethod, shinStatus, shinReason = '';
+      if(preserveLegacyShin){
+        // Never "upgrade" unknown legacy data into Numerical without evidence.
+        // A stored numeric shinZ is evidence of the old numerical implementation;
+        // an explicit unknown-legacy label must remain unknown.
+        if(priorMethod === 'unknown-legacy'){
+          shinMethod = 'unknown-legacy';
+        }else if(priorMethod.startsWith('numerical')){
+          shinMethod = priorMethod;
+        }else if(!priorMethod && oldMeta.shinZ !== null && oldMeta.shinZ !== undefined &&
+                 oldMeta.shinZ !== '' && Number.isFinite(Number(oldMeta.shinZ))){
+          shinMethod = 'numerical-legacy';
+        }else{
+          shinMethod = 'unknown-legacy';
+        }
+        shinStatus = 'legacy';
+      }else if(f.shin.valid){
+        shinMethod = 'analytical';
+        shinStatus = 'ok';
+      }else{
+        shinMethod = 'analytical-unstable';
+        shinStatus = 'unstable';
+        shinReason = f.shin.reason || 'unstable analytical Shin';
+      }
+
+      item.outcomes.forEach((o,i)=>{
+        if(!o || typeof o !== 'object') return;
+        const your = normalizeOdds(o.your);
+
+        if(!Number.isFinite(optionalNum(o.fairProp))){ o.fairProp=f.proportional.fair[i]; changed=true; }
+        if(!Number.isFinite(optionalNum(o.fairPow))){ o.fairPow=f.power.fair[i]; changed=true; }
+        if(!Number.isFinite(optionalNum(o.fairOOEPC))){ o.fairOOEPC=f.ooepc.fair[i]; changed=true; }
+        if(Number.isFinite(your)){
+          if(!Number.isFinite(optionalNum(o.edgeProp))){ o.edgeProp=((your/Number(o.fairProp))-1)*100; changed=true; }
+          if(!Number.isFinite(optionalNum(o.edgePow))){ o.edgePow=((your/Number(o.fairPow))-1)*100; changed=true; }
+          if(!Number.isFinite(optionalNum(o.edgeOOEPC))){ o.edgeOOEPC=((your/Number(o.fairOOEPC))-1)*100; changed=true; }
+        }
+
+        if(!preserveLegacyShin){
+          if(f.shin.valid){
+            const nf=f.shin.fair[i];
+            const ne=Number.isFinite(your) ? ((your/nf)-1)*100 : NaN;
+            if(!Number.isFinite(optionalNum(o.fairShin)) || Math.abs(Number(o.fairShin)-nf)>1e-12){ o.fairShin=nf; changed=true; }
+            if(Number.isFinite(ne)){
+              if(!Number.isFinite(optionalNum(o.edgeShin)) || Math.abs(Number(o.edgeShin)-ne)>1e-12){ o.edgeShin=ne; changed=true; }
+            }else if('edgeShin' in o){ delete o.edgeShin; changed=true; }
+          }else{
+            if('fairShin' in o){ delete o.fairShin; changed=true; }
+            if('edgeShin' in o){ delete o.edgeShin; changed=true; }
+          }
+        }
+      });
+
+      const newMeta={
+        ...oldMeta,
+        calculatorVersion: oldMeta.calculatorVersion || 'legacy',
+        calculatorSchemaVersion: 3,
+        powerExponent: Number.isFinite(Number(oldMeta.powerExponent)) ? Number(oldMeta.powerExponent) : f.power.a,
+        powerFallback: typeof oldMeta.powerFallback === 'boolean' ? oldMeta.powerFallback : f.power.fallback,
+        shinMethod, shinStatus, shinReason,
+        shinZ: preserveLegacyShin ? (oldMeta.shinZ ?? null) : f.shin.z,
+        ooepcZ: Number.isFinite(Number(oldMeta.ooepcZ)) ? Number(oldMeta.ooepcZ) : f.ooepc.z,
+        ooepcFallback: typeof oldMeta.ooepcFallback === 'boolean' ? oldMeta.ooepcFallback : f.ooepc.fallback
+      };
+      if(JSON.stringify(item.methodMeta||{}) !== JSON.stringify(newMeta)){ item.methodMeta=newMeta; changed=true; }
+    }
+    /* NO AUTO-WRITE ON INITIAL LOAD: history revalidation remains in memory */
+  })();
+
+  // v19 tracker migration:
+  // Synchronise calculator-generated tracker bets with the already-revalidated history.
+  // If a v17 Analytical Shin result is now known to be unstable, preserve its old raw
+  // value in legacy* audit fields but remove it from active Shin statistics/consensus.
+  // If the linked history is gone, mark the old v17 Analytical result as unverified
+  // instead of pretending it is a valid modern Analytical Shin value.
+  (function migrateTrackerShin(){
+    let changed = false;
+    const historyById = new Map(history.filter(x=>x && x.id).map(x=>[x.id, x]));
+
+    for(const b of bets.prop){
+      if(!b || typeof b !== 'object') continue;
+      const isCalculatorBet = b.edgeSource === 'calculator' || !!b.calculatorHistoryId;
+      if(!isCalculatorBet) continue;
+
+      const linked = b.calculatorHistoryId ? historyById.get(b.calculatorHistoryId) : null;
+
+      const preserveOldShin = () => {
+        const oldEdge = optionalNum(b.edgeShin);
+        const oldFair = optionalNum(b.fairShin);
+        if(Number.isFinite(oldEdge) && !Number.isFinite(optionalNum(b.legacyEdgeShin))){
+          b.legacyEdgeShin = oldEdge; changed = true;
+        }
+        if(Number.isFinite(oldFair) && !Number.isFinite(optionalNum(b.legacyFairShin))){
+          b.legacyFairShin = oldFair; changed = true;
+        }
+      };
+      const clearActiveShin = () => {
+        if('edgeShin' in b){ delete b.edgeShin; changed = true; }
+        if('fairShin' in b){ delete b.fairShin; changed = true; }
+      };
+      const setField = (k,v) => {
+        if(b[k] !== v){ b[k] = v; changed = true; }
+      };
+
+      if(linked){
+        const meta = linked.methodMeta && typeof linked.methodMeta === 'object' ? linked.methodMeta : {};
+        const outcome = Array.isArray(linked.outcomes)
+          ? (linked.outcomes.find(o=>o && o.key === b.outcomeKey) || null)
+          : null;
+        const method = String(meta.shinMethod || '');
+        const status = String(meta.shinStatus || '');
+
+        if(status === 'unstable' || method === 'analytical-unstable'){
+          preserveOldShin();
+          clearActiveShin();
+          setField('shinMethod', 'analytical-unstable');
+          setField('shinStatus', 'unstable');
+          setField('shinReason', meta.shinReason || 'revalidated as unstable analytical Shin');
+        }else if(method === 'unknown-legacy'){
+          // Preserve the raw value but do not classify it as Analytical/Numerical.
+          setField('shinMethod', 'unknown-legacy');
+          setField('shinStatus', 'legacy');
+          setField('shinReason', meta.shinReason || '');
+          if(outcome){
+            const fs = optionalNum(outcome.fairShin), es = optionalNum(outcome.edgeShin);
+            if(Number.isFinite(fs) && optionalNum(b.fairShin) !== fs){ b.fairShin = fs; changed = true; }
+            if(Number.isFinite(es) && optionalNum(b.edgeShin) !== es){ b.edgeShin = es; changed = true; }
+          }
+        }else if(method.startsWith('numerical')){
+          setField('shinMethod', method);
+          setField('shinStatus', 'legacy');
+          setField('shinReason', meta.shinReason || '');
+          if(outcome){
+            const fs = optionalNum(outcome.fairShin), es = optionalNum(outcome.edgeShin);
+            if(Number.isFinite(fs) && optionalNum(b.fairShin) !== fs){ b.fairShin = fs; changed = true; }
+            if(Number.isFinite(es) && optionalNum(b.edgeShin) !== es){ b.edgeShin = es; changed = true; }
+          }
+        }else if(method === 'analytical' && status !== 'unstable'){
+          setField('shinMethod', 'analytical');
+          setField('shinStatus', 'ok');
+          setField('shinReason', meta.shinReason || '');
+          if(outcome){
+            const fs = optionalNum(outcome.fairShin), es = optionalNum(outcome.edgeShin);
+            if(Number.isFinite(fs)){
+              if(optionalNum(b.fairShin) !== fs){ b.fairShin = fs; changed = true; }
+            }else if('fairShin' in b){ delete b.fairShin; changed = true; }
+            if(Number.isFinite(es)){
+              if(optionalNum(b.edgeShin) !== es){ b.edgeShin = es; changed = true; }
+            }else if('edgeShin' in b){ delete b.edgeShin; changed = true; }
+          }
+        }
+      }else{
+        // Old v17 calculator bet with no remaining history cannot be safely revalidated.
+        const looksLikeV17Analytical =
+          String(b.calculatorVersion || '') === 'v17' &&
+          String(b.shinMethod || '') === 'analytical' &&
+          (Number.isFinite(optionalNum(b.edgeShin)) || Number.isFinite(optionalNum(b.fairShin)));
+        if(looksLikeV17Analytical){
+          preserveOldShin();
+          clearActiveShin();
+          setField('shinMethod', 'analytical-legacy-unverified');
+          setField('shinStatus', 'legacy-unverified');
+          setField('shinReason', 'v17 analytical Shin could not be revalidated because linked calculation history is unavailable');
+        }
+      }
+    }
+
+    /* NO AUTO-WRITE ON INITIAL LOAD: tracker migration remains in memory */
+  })();
+
+  function nowStamp(){
+    const d = new Date();
+    return d.toLocaleString();
+  }
+
+  function makeHistoryCard(item){
+    const card = document.createElement('div');
+    card.className = 'history-card' + (item.suggested ? ' suggested' : '');
+    card.dataset.id = item.id;
+
+    const header = document.createElement('div');
+    header.className = 'history-header';
+
+    const mt = document.createElement('div');
+    mt.className = 'history-market-type';
+    mt.textContent = item.marketType === '3way' ? '3-WAY (1X2)' : '2-WAY';
+
+    const ts = document.createElement('div');
+    ts.className = 'history-timestamp';
+    ts.textContent = item.timestamp;
+
+    header.appendChild(mt);
+    header.appendChild(ts);
+
+    const outcomes = document.createElement('div');
+    outcomes.className = 'history-outcomes';
+
+    for(const o of item.outcomes){
+      const box = document.createElement('div');
+      box.className = 'history-outcome';
+      box.dataset.outcome = o.key;
+
+      const name = document.createElement('div');
+      name.className = 'history-outcome-name';
+      name.textContent = o.name;
+
+      const det = document.createElement('div');
+      det.className = 'history-outcome-details';
+
+      const methodEdges = [o.edgeProp, o.edgePow, o.edgeShin, o.edgeOOEPC].filter(Number.isFinite);
+      const positives = methodEdges.filter(v => v > 0).length;
+      const available = methodEdges.length;
+      const consensusClass = (available >= 3 && positives === available) ? 'strong' : (positives >= 2 ? 'mixed' : '');
+      const shinMethod = String(item.methodMeta?.shinMethod || '');
+      const shinUnstable = shinMethod === 'analytical-unstable' || item.methodMeta?.shinStatus === 'unstable';
+      const shinTitle = shinUnstable ? 'SHIN (UNSTABLE)' :
+        (shinMethod.startsWith('numerical') ? 'SHIN (NUMERICAL LEGACY)' :
+        (shinMethod==='unknown-legacy' ? 'SHIN (LEGACY / UNKNOWN)' : 'SHIN (ANALYTICAL)'));
+      const shinValues = shinUnstable
+        ? `N/A${item.methodMeta?.shinReason ? ' · ' + item.methodMeta.shinReason : ''}`
+        : `Fair: ${formatNum(o.fairShin,3)} · EV: ${formatPct(o.edgeShin,2)}`;
+
+      det.innerHTML = [
+        `<span>Pinn: ${formatNum(o.pinn,2)}</span>`,
+        `<span>Your: ${formatNum(o.your,2)}</span>`,
+        `<div class="devig-comparison">`,
+        `<div class="devig-method"><div class="devig-method-title proportional">PROPORTIONAL</div><div class="devig-method-values">Fair: ${formatNum(o.fairProp,3)} · EV: ${formatPct(o.edgeProp,2)}</div></div>`,
+        `<div class="devig-method"><div class="devig-method-title power">POWER</div><div class="devig-method-values">Fair: ${formatNum(o.fairPow,3)} · EV: ${formatPct(o.edgePow,2)}</div></div>`,
+        `<div class="devig-method"><div class="devig-method-title shin">${shinTitle}</div><div class="devig-method-values">${shinValues}</div></div>`,
+        `<div class="devig-method"><div class="devig-method-title ooepc">OO-EPC</div><div class="devig-method-values">Fair: ${formatNum(o.fairOOEPC,3)} · EV: ${formatPct(o.edgeOOEPC,2)}</div></div>`,
+        `</div>`,
+        `<div class="method-consensus ${consensusClass}">Consensus: ${positives}/${available} available methods positive EV</div>`
+      ].join('');
+box.appendChild(name);
+      box.appendChild(det);
+      outcomes.appendChild(box);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'history-actions';
+
+    const btnAdd = document.createElement('button');
+    btnAdd.textContent = 'Add Bet';
+    btnAdd.dataset.action = 'addBet';
+
+    const btnReload = document.createElement('button');
+    btnReload.textContent = 'Reload';
+    btnReload.className = 'btn-reload-history';
+    btnReload.dataset.action = 'reload';
+
+    const btnRemove = document.createElement('button');
+    btnRemove.textContent = 'Remove';
+    btnRemove.className = 'btn-remove-history';
+    btnRemove.dataset.action = 'remove';
+
+    actions.appendChild(btnAdd);
+    actions.appendChild(btnReload);
+    actions.appendChild(btnRemove);
+
+    card.appendChild(header);
+    card.appendChild(outcomes);
+    card.appendChild(actions);
+    return card;
+  }
+
+  function renderHistory(){
+    const list = el('historyList');
+    if(!list) return;
+    list.innerHTML = '';
+
+    if(!history.length){
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = `<div class="empty-state-icon">📊</div>No calculations yet!`;
+      list.appendChild(empty);
+      return;
+    }
+
+    // newest first
+    const sorted = history.slice().sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
+    for(const item of sorted){
+      list.appendChild(makeHistoryCard(item));
+    }
+  }
+
+  function saveHistory(){
+    saveArray(STORAGE_KEYS.history, history);
+  }
+
+  // market type change: show/hide draw inputs
+  const marketTypeSel = el('marketType');
+  const pinnDrawGroup = el('pinnDrawGroup');
+  const yourDrawGroup = el('yourDrawGroup');
+
+  function applyMarketVisibility(){
+    const v = marketTypeSel ? marketTypeSel.value : '2way';
+    const is3 = v === '3way';
+    if(pinnDrawGroup) pinnDrawGroup.style.display = is3 ? 'block' : 'none';
+    if(yourDrawGroup) yourDrawGroup.style.display = is3 ? 'block' : 'none';
+  }
+  if(marketTypeSel){
+    marketTypeSel.addEventListener('change', applyMarketVisibility);
+    applyMarketVisibility();
+  }
+
+  const __calcDraftIds = ['marketType','pinnHome','pinnDraw','pinnAway','yourHome','yourDraw','yourAway'];
+  restoreDraft(STORAGE_KEYS.draftCalc, __calcDraftIds);
+  wireDraftPersistence(STORAGE_KEYS.draftCalc, __calcDraftIds);
+  try{ applyMarketVisibility(); }catch(e){}
+
+  const calcBtn = el('calculateEdge');
+  if(calcBtn){
+    calcBtn.addEventListener('click', ()=>{
+      const marketType = marketTypeSel ? marketTypeSel.value : '2way';
+
+      const pinnHome = normalizeOdds(el('pinnHome')?.value);
+      const pinnAway = normalizeOdds(el('pinnAway')?.value);
+      const yourHome = normalizeOdds(el('yourHome')?.value);
+      const yourAway = normalizeOdds(el('yourAway')?.value);
+
+      let pinnDraw = null, yourDraw = null;
+
+      if(marketType === '3way'){
+        pinnDraw = normalizeOdds(el('pinnDraw')?.value);
+        yourDraw = normalizeOdds(el('yourDraw')?.value);
+      }
+
+      const needed = ['Pinnacle Home','Pinnacle Away','Your Home','Your Away'];
+      const missing = [];
+      if(pinnHome===null) missing.push(needed[0]);
+      if(pinnAway===null) missing.push(needed[1]);
+      if(yourHome===null) missing.push(needed[2]);
+      if(yourAway===null) missing.push(needed[3]);
+      if(marketType === '3way'){
+        if(pinnDraw===null) missing.push('Pinnacle Draw');
+        if(yourDraw===null) missing.push('Your Draw');
+      }
+      if(missing.length){
+        alert('Please fill: ' + missing.join(', '));
+        return;
+      }
+
+      const pinnOdds = marketType === '3way' ? [pinnHome, pinnDraw, pinnAway] : [pinnHome, pinnAway];
+      const yourOdds = marketType === '3way' ? [yourHome, yourDraw, yourAway] : [yourHome, yourAway];
+
+      const sanity = validatePinnacleMarket(pinnOdds);
+      if(!sanity.ok){ alert(sanity.message); return; }
+      const fairObj = calcFairOdds(pinnOdds);
+      const fairProp = fairObj.proportional.fair;
+      const fairPow = fairObj.power.fair;
+      const fairShin = fairObj.shin.fair;
+      const fairOOEPC = fairObj.ooepc.fair;
+      const expA = fairObj.power.a;
+const names = marketType === '3way' ? [
+        {key:'home', name:'HOME/1'},
+        {key:'draw', name:'DRAW/X'},
+        {key:'away', name:'AWAY/2'}
+      ] : [
+        {key:'home', name:'HOME'},
+        {key:'away', name:'AWAY'}
+      ];
+
+      const outcomes = names.map((n, i)=>{
+        const edgeProp = ((yourOdds[i] / fairProp[i]) - 1) * 100;
+        const edgePow  = ((yourOdds[i] / fairPow[i]) - 1) * 100;
+        const edgeShin = fairObj.shin.valid && Number.isFinite(fairShin[i])
+          ? ((yourOdds[i] / fairShin[i]) - 1) * 100
+          : NaN;
+        const edgeOOEPC = ((yourOdds[i] / fairOOEPC[i]) - 1) * 100;
+        return {
+          key:n.key, name:n.name,
+          pinn:pinnOdds[i], your:yourOdds[i],
+          fairProp: fairProp[i], fairPow: fairPow[i], fairShin: fairShin[i], fairOOEPC: fairOOEPC[i],
+          edgeProp, edgePow, edgeShin, edgeOOEPC
+        };
+      });
+
+      const best = outcomes.reduce((a,b)=> (b.edgeProp > a.edgeProp ? b : a), outcomes[0]);
+      const suggested = outcomes.some(o => {
+        const vals=[o.edgeProp,o.edgePow,o.edgeShin,o.edgeOOEPC].filter(Number.isFinite);
+        return vals.length >= 3 && vals.filter(v=>v>0).length >= Math.min(3, vals.length);
+      });
+
+      const item = {
+        id: uid(),
+        createdAt: Date.now(),
+        timestamp: nowStamp(),
+        marketType,
+        methodMeta: {
+          calculatorVersion:'v19',
+          calculatorSchemaVersion:3,
+          powerExponent: fairObj.power.a,
+          powerFallback: fairObj.power.fallback,
+          shinMethod: fairObj.shin.valid ? 'analytical' : 'analytical-unstable',
+          shinStatus: fairObj.shin.status,
+          shinReason: fairObj.shin.reason || '',
+          shinZ: fairObj.shin.z,
+          ooepcZ: fairObj.ooepc.z,
+          ooepcFallback: fairObj.ooepc.fallback
+        },
+        outcomes,
+        suggested
+      };
+
+      history.push(item);
+      saveHistory();
+      renderHistory();
+    });
+  }
+
+  // history actions: add bet / remove
+  let pendingRemoveHistoryId = null;
+  let pendingAddFromHistory = null; // {historyId, outcomeKey}
+
+  const removeHistoryModalId = 'removeHistoryModal';
+  const clearHistoryModalId = 'clearHistoryModal';
+  const addFromHistoryModalId = 'addFromHistoryModal';
+
+  wireModalCancel(removeHistoryModalId);
+  wireModalCancel(clearHistoryModalId);
+  wireModalCancel(addFromHistoryModalId);
+
+  const historyList = el('historyList');
+  if(historyList){
+    historyList.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button');
+      const card = e.target.closest('.history-card');
+      if(!btn || !card) return;
+      const id = card.dataset.id;
+      const action = btn.dataset.action;
+      if(!id || !action) return;
+
+      if(action === 'remove'){
+        pendingRemoveHistoryId = id;
+        showModal(removeHistoryModalId);
+      }
+      if(action === 'reload'){
+        const item = history.find(h=>h.id===id);
+        if(!item) return;
+        // Switch to calculator tab and load the odds back into inputs
+        if(btnCalc){
+          activateTab('calculatorTab', btnCalc);
+        }
+        // Set market type
+        const mtSel = el('marketType');
+        if(mtSel){
+          mtSel.value = item.marketType || '2way';
+        }
+        if(typeof applyMarketVisibility === 'function'){ applyMarketVisibility(); }
+        // Map outcomes -> inputs
+        const home = item.outcomes.find(o=>o.key==='home');
+        const away = item.outcomes.find(o=>o.key==='away');
+        const draw = item.outcomes.find(o=>o.key==='draw');
+
+        if(home){
+          const ph = el('pinnHome'); if(ph) ph.value = String(home.pinn ?? '');
+          const yh = el('yourHome'); if(yh) yh.value = String(home.your ?? '');
+        }
+        if(away){
+          const pa = el('pinnAway'); if(pa) pa.value = String(away.pinn ?? '');
+          const ya = el('yourAway'); if(ya) ya.value = String(away.your ?? '');
+        }
+        if(draw){
+          const pd = el('pinnDraw'); if(pd) pd.value = String(draw.pinn ?? '');
+          const yd = el('yourDraw'); if(yd) yd.value = String(draw.your ?? '');
+        }else{
+          const pd = el('pinnDraw'); if(pd) pd.value = '';
+          const yd = el('yourDraw'); if(yd) yd.value = '';
+        }
+
+        // Optional: scroll to top of calculator panel for fast edits
+        const calcPanel = document.getElementById('calculatorTab');
+        if(calcPanel && calcPanel.scrollIntoView){
+          calcPanel.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+        return;
+      }
+
+      if(action === 'addBet'){
+        const item = history.find(h=>h.id===id);
+        if(!item) return;
+        const best = item.outcomes.reduce((a,b)=> (b.edgeProp > a.edgeProp ? b : a), item.outcomes[0]);
+        // If the user clicked an outcome box first, respect that selection.
+        const selected = (pendingAddFromHistory && pendingAddFromHistory.historyId === id)
+          ? (item.outcomes.find(o => o.key === pendingAddFromHistory.outcomeKey) || best)
+          : best;
+        pendingAddFromHistory = {historyId:id, outcomeKey:selected.key};
+        openAddFromHistoryModal(item, selected);
+      }
+    });
+
+    // allow clicking an outcome box to select that outcome for Add Bet
+    historyList.addEventListener('click', (e)=>{
+      const outcomeBox = e.target.closest('.history-outcome');
+      const card = e.target.closest('.history-card');
+      if(!outcomeBox || !card) return;
+      const item = history.find(h=>h.id===card.dataset.id);
+      if(!item) return;
+      const key = outcomeBox.dataset.outcome;
+      const o = item.outcomes.find(x=>x.key===key);
+      if(!o) return;
+      // store selection for next Add Bet click
+      pendingAddFromHistory = {historyId:item.id, outcomeKey:key};
+    });
+  }
+
+  const btnClearHistory = el('clearHistory');
+  if(btnClearHistory){
+    btnClearHistory.addEventListener('click', ()=> showModal(clearHistoryModalId));
+  }
+
+  // Confirm remove single history item
+  const removeHistModal = el(removeHistoryModalId);
+  if(removeHistModal){
+    const confirm = removeHistModal.querySelector('.btn-confirm');
+    if(confirm){
+      confirm.addEventListener('click', ()=>{
+        if(pendingRemoveHistoryId){
+          history = history.filter(h=>h.id !== pendingRemoveHistoryId);
+          pendingRemoveHistoryId = null;
+          saveHistory();
+          hideModal(removeHistoryModalId);
+          renderHistory();
+        }else{
+          hideModal(removeHistoryModalId);
+        }
+      });
+    }
+  }
+
+  // Confirm clear history
+  const clearHistModal = el(clearHistoryModalId);
+  if(clearHistModal){
+    const confirm = clearHistModal.querySelector('.btn-confirm');
+    if(confirm){
+      confirm.addEventListener('click', ()=>{
+        history = [];
+        saveHistory();
+        hideModal(clearHistoryModalId);
+        renderHistory();
+      });
+    }
+  }
+
+  // Add from history modal logic
+  function openAddFromHistoryModal(item, outcome){
+    // Pre-fill fields for the selected outcome
+    if(el('histDate')){
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth()+1).padStart(2,'0');
+      const dd = String(today.getDate()).padStart(2,'0');
+      el('histDate').value = `${yyyy}-${mm}-${dd}`;
+    }
+    // league: keep as-is
+    if(el('histOutcome')) el('histOutcome').value = outcome.name;
+    if(el('histOdds')) el('histOdds').value = formatNum(outcome.your, 2);
+    if(el('histUnits')) el('histUnits').value = '10';
+    if(el('histResult')) el('histResult').value = 'pending';
+    if(el('histLive')) el('histLive').checked = false;
+
+    const m = el(addFromHistoryModalId);
+    if(m){ m.dataset.historyId = item.id; m.dataset.outcomeKey = outcome.key; }
+
+    // Display EV% (Proportional) for the current odds as a reference
+    const oddsNow = normalizeOdds(el('histOdds')?.value) ?? outcome.your;
+    const edgeNow = Number.isFinite(oddsNow) ? ((oddsNow / outcome.fairProp) - 1) * 100 : outcome.edgeProp;
+    if(el('histEdge')) el('histEdge').value = formatNum(edgeNow, 2);
+
+    showModal(addFromHistoryModalId);
+  }
+
+  
+  // Keep Edge % in sync when user switches method in "Add Bet from History" modal
+  let __histModalWired = false;
+  function wireHistModalSync(){
+    if(__histModalWired) return;
+    const m = el(addFromHistoryModalId);
+    if(!m) return;
+
+    // Legacy method selector is hidden; all four edges are stored on one tracker record
+    const sel = el('histMethod');
+    if(sel){
+      try{
+        const grp = sel.closest('.input-group');
+        if(grp) grp.style.display = 'none';
+      }catch(e){}
+    }
+
+    const oddsInput = el('histOdds');
+
+    const sync = ()=>{
+      const hid = m.dataset.historyId || pendingAddFromHistory?.historyId;
+      const ok = m.dataset.outcomeKey || pendingAddFromHistory?.outcomeKey;
+      const item = history.find(h=>h.id===hid);
+      if(!item) return;
+      const o = item.outcomes.find(x=>x.key===ok) || item.outcomes[0];
+      if(!o) return;
+
+      const oddsNow = normalizeOdds(oddsInput?.value) ?? o.your;
+      const ep = Number.isFinite(oddsNow) ? ((oddsNow / o.fairProp) - 1) * 100 : o.edgeProp;
+      if(el('histEdge')) el('histEdge').value = formatNum(ep, 2);
+    };
+
+    if(oddsInput) oddsInput.addEventListener('input', sync);
+    m.addEventListener('focusin', sync);
+    __histModalWired = true;
+  }
+  wireHistModalSync();
+
+const addFromHistModal = el(addFromHistoryModalId);
+  if(addFromHistModal){
+    const confirm = addFromHistModal.querySelector('.btn-confirm');
+    if(confirm){
+      confirm.addEventListener('click', ()=>{
+        // Add to the main tracker with all four method edges, using the SAME pick (chosen by Proportional earlier)
+        const modal = el(addFromHistoryModalId);
+        const hid = modal?.dataset.historyId || pendingAddFromHistory?.historyId;
+        const ok = modal?.dataset.outcomeKey || pendingAddFromHistory?.outcomeKey;
+        const item = history.find(h=>h.id===hid);
+        if(!item) return;
+
+        const o = (item.outcomes.find(x=>x.key===ok)) || item.outcomes[0];
+        if(!o) return;
+
+        // Read fields (with safe defaults)
+        let date = el('histDate')?.value || '';
+        if(!date){
+          const t = new Date();
+          const yyyy = t.getFullYear();
+          const mm = String(t.getMonth()+1).padStart(2,'0');
+          const dd = String(t.getDate()).padStart(2,'0');
+          date = `${yyyy}-${mm}-${dd}`;
+        }
+
+        const league = el('histLeague')?.value || '';
+        const odds = normalizeOdds(el('histOdds')?.value) ?? normalizeOdds(o.your);
+        const units = safeNum(el('histUnits')?.value) ?? 10;
+        const live = !!el('histLive')?.checked;
+
+        if(odds === null || !Number.isFinite(units) || units<=0) return;
+
+        // EV% edges for all four methods for the SAME pick/odds
+        const edgeProp = ((odds / o.fairProp) - 1) * 100;
+        const edgePow  = ((odds / o.fairPow) - 1) * 100;
+        const shinAvailable = Number.isFinite(optionalNum(o.fairShin)) &&
+          item.methodMeta?.shinStatus !== 'unstable' &&
+          item.methodMeta?.shinMethod !== 'analytical-unstable';
+        const edgeShin = shinAvailable ? ((odds / Number(o.fairShin)) - 1) * 100 : null;
+        const edgeOOEPC = ((odds / o.fairOOEPC) - 1) * 100;
+
+        const result = normalizeResult(el('histResult')?.value || 'pending');
+
+        const base = {
+          date, league, odds, units, live, result,
+          edgeProp,
+          edgePower: edgePow,
+          edgeOOEPC,
+          fairProp:Number(o.fairProp),
+          fairPower:Number(o.fairPow),
+          fairOOEPC:Number(o.fairOOEPC),
+          shinMethod:item.methodMeta?.shinMethod || 'analytical',
+          shinStatus:item.methodMeta?.shinStatus || (shinAvailable ? 'ok' : 'unstable'),
+          shinReason:item.methodMeta?.shinReason || '',
+          edgeSource:'calculator',
+          calculatorVersion:item.methodMeta?.calculatorVersion || 'legacy',
+          calculatorHistoryId:item.id,
+          sourceMarketType:item.marketType,
+          outcomeKey:o.key,
+          schemaVersion:BET_SCHEMA_VERSION
+        };
+        if(shinAvailable){
+          base.edgeShin = edgeShin;
+          base.fairShin = Number(o.fairShin);
+        }
+
+        // Main visible tracker remains Proportional for backwards compatibility.
+        // All four method edges live on this SAME bet record for comparison/export.
+        bets.prop.push({ id: uid(), ...base, edge: edgeProp });
+
+        saveArray(STORAGE_KEYS.prop, bets.prop);
+
+        hideModal(addFromHistoryModalId);
+        render('prop');
+
+        // Switch to Proportional tab (pick source)
+        if(btnProp) activateTab('proportionalTab', btnProp);
+      });
+    }
+  }
+
+  // Initial render
+  render('prop');
+  render('power');
+  renderHistory();
+
+})();
+</script>
+</html>
